@@ -1,0 +1,20 @@
+{
+  "name": "bunn-portfolio",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @bunn/web --filter @bunn/api run dev",
+    "dev:web": "pnpm --filter @bunn/web run dev",
+    "dev:api": "pnpm --filter @bunn/api run dev",
+    "db:dev": "docker compose -f compose.dev.yml up -d",
+    "db:migrate": "pnpm --filter @bunn/api exec node ace migration:run",
+    "db:seed": "pnpm --filter @bunn/api exec node ace db:seed --files database/seeders/initial_seeder.ts",
+    "db:seed:demo": "pnpm --filter @bunn/api exec node ace db:seed --files database/seeders/demo_seeder.ts",
+    "lint": "pnpm -r --if-present run lint",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "build": "pnpm -r --if-present run build"
+  }
+}

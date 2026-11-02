@@ -1,0 +1,68 @@
+# Produksi (server). Dijalankan dari root repo: docker compose up -d --build
+# Hanya `web` yang dipetakan ke host (127.0.0.1:3000), diteruskan oleh cloudflared.
+# `api` dan `db` hanya terjangkau di jaringan internal Compose.
+name: bunn-portfolio
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      NUXT_API_INTERNAL_URL: http://api:3333
+      NUXT_PUBLIC_SITE_URL: https://bunn.my.id
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    env_file: apps/api/.env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3333"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_DATABASE: ${POSTGRES_DB}
+      UPLOADS_DIR: /app/storage/uploads
+    volumes:
+      - uploads:/app/storage/uploads
+    expose:
+      - "3333"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3333/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
+  uploads:

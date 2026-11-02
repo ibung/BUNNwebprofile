@@ -1,0 +1,27 @@
+# dependensi dan build
+node_modules/
+.nuxt/
+.output/
+.nitro/
+dist/
+build/
+coverage/
+tmp/
+*.log
+
+# rahasia (hanya *.env.example yang boleh di-commit)
+.env
+.env.*
+!.env.example
+
+# unggahan dan data lokal
+apps/api/storage/uploads/*
+!apps/api/storage/uploads/.gitkeep
+backups/
+
+# sistem
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
