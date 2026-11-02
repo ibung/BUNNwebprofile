@@ -5,12 +5,12 @@ Kerjakan **satu** tugas teratas yang belum dicentang, kecuali pemilik meminta la
 Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/DEPLOYMENT.md`.
 
 ## Fase 0: Fondasi repo
-- [ ] T-001 Buat repo GitHub private, `git init`, commit awal, dan hubungkan remote (pemilik)
-- [ ] T-002 Konfirmasi keputusan terbuka di `docs/PRD.md` bagian 9 (versi AdonisJS, halaman detail skill)
-- [ ] T-003 Scaffold `apps/api` (AdonisJS, Lucid + PostgreSQL, VineJS, sesi cookie, nama paket `@bunn/api`) dan sambungkan ke workspace
-- [ ] T-004 Scaffold `apps/web` (Nuxt 4, TypeScript, nama paket `@bunn/web`) dan sambungkan ke workspace
-- [ ] T-005 Hubungkan `@bunn/shared` ke kedua app, atur ESLint, Prettier, dan skrip `lint`, `typecheck`, `build` di semua paket
-- [ ] T-006 `pnpm db:dev` menjalankan PostgreSQL lokal, `pnpm dev` menjalankan web dan api bersamaan
+- [x] T-001 Buat repo GitHub private, `git init`, commit awal, dan hubungkan remote (pemilik)
+- [x] T-002 Konfirmasi keputusan terbuka di `docs/PRD.md` bagian 9 (versi AdonisJS, halaman detail skill)
+- [x] T-003 Scaffold `apps/api` (AdonisJS, Lucid + PostgreSQL, VineJS, sesi cookie, nama paket `@bunn/api`) dan sambungkan ke workspace
+- [x] T-004 Scaffold `apps/web` (Nuxt 4, TypeScript, nama paket `@bunn/web`) dan sambungkan ke workspace
+- [x] T-005 Hubungkan `@bunn/shared` ke kedua app, atur ESLint, Prettier, dan skrip `lint`, `typecheck`, `build` di semua paket
+- [x] T-006 `pnpm db:dev` menjalankan PostgreSQL lokal, `pnpm dev` menjalankan web dan api bersamaan
 
 ## Fase 1: Database dan API inti
 - [ ] T-010 Migrasi dan model sesuai `docs/DATABASE.md` (users sampai contact_messages), plus enum di `packages/shared`
