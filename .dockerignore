@@ -6,6 +6,8 @@
 **/build
 .git
 .agent
+.swc-cache
+.vscode
 docs
 backups
 **/.env

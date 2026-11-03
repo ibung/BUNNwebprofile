@@ -58,8 +58,8 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-066 Kotak pesan
 
 ## Fase 7: Deploy
-- [ ] T-070 `apps/web/Dockerfile` dan `apps/api/Dockerfile` sesuai `docs/DEPLOYMENT.md`, plus `.dockerignore`
-- [ ] T-071 Validasi `docker-compose.yml`, jalankan seluruh stack lokal dengan Compose
+- [x] T-070 `apps/web/Dockerfile` dan `apps/api/Dockerfile` sesuai `docs/DEPLOYMENT.md`, plus `.dockerignore`
+- [x] T-071 Validasi `docker-compose.yml`, jalankan seluruh stack lokal dengan Compose
 - [ ] T-072 Deploy pertama di server, ganti rute tunnel ke `localhost:3000`, matikan Nginx lama (pemilik, dipandu)
 - [ ] T-073 Jadwalkan backup harian, salin ke HDD, uji restore satu kali (pemilik, dipandu)
 

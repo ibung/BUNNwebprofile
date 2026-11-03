@@ -7,40 +7,483 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-export class AuthAccessTokenSchema extends BaseModel {
+export class ContactMessageSchema extends BaseModel {
   static $columns = [
-    'abilities',
+    'body',
     'createdAt',
-    'expiresAt',
-    'hash',
+    'email',
     'id',
-    'lastUsedAt',
+    'ipHash',
     'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
+    'readAt',
+    'status',
+    'subject',
+    'userAgent',
   ] as const
-  $columns = AuthAccessTokenSchema.$columns
+  $columns = ContactMessageSchema.$columns
   @column()
-  declare abilities: string
+  declare body: string
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime | null
-  @column.dateTime()
-  declare expiresAt: DateTime | null
+  declare createdAt: DateTime
   @column()
-  declare hash: string
+  declare email: string
   @column({ isPrimary: true })
   declare id: number
+  @column()
+  declare ipHash: string | null
+  @column()
+  declare name: string
   @column.dateTime()
-  declare lastUsedAt: DateTime | null
+  declare readAt: DateTime | null
   @column()
-  declare name: string | null
+  declare status: string
   @column()
-  declare tokenableId: number
+  declare subject: string | null
   @column()
-  declare type: string
+  declare userAgent: string | null
+}
+
+export class ExperienceMediaSchema extends BaseModel {
+  static $columns = ['experienceId', 'mediaId', 'sortOrder'] as const
+  $columns = ExperienceMediaSchema.$columns
+  @column({ isPrimary: true })
+  declare experienceId: number
+  @column()
+  declare mediaId: number
+  @column()
+  declare sortOrder: number
+}
+
+export class ExperienceSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'descriptionMd',
+    'endedOn',
+    'id',
+    'isVisible',
+    'kind',
+    'organization',
+    'sortOrder',
+    'startedOn',
+    'title',
+    'updatedAt',
+  ] as const
+  $columns = ExperienceSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare descriptionMd: string | null
+  @column.date()
+  declare endedOn: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare kind: string
+  @column()
+  declare organization: string | null
+  @column()
+  declare sortOrder: number
+  @column.date()
+  declare startedOn: DateTime
+  @column()
+  declare title: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class HighlightSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'id',
+    'isVisible',
+    'label',
+    'note',
+    'placement',
+    'sortOrder',
+    'updatedAt',
+    'value',
+  ] as const
+  $columns = HighlightSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare label: string
+  @column()
+  declare note: string | null
+  @column()
+  declare placement: string
+  @column()
+  declare sortOrder: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare value: string
+}
+
+export class MediaSchema extends BaseModel {
+  static $columns = [
+    'altText',
+    'caption',
+    'checksumSha256',
+    'createdAt',
+    'durationSeconds',
+    'height',
+    'id',
+    'kind',
+    'mimeType',
+    'originalName',
+    'posterKey',
+    'sizeBytes',
+    'storageKey',
+    'title',
+    'variants',
+    'width',
+    'youtubeId',
+    'youtubeStartSeconds',
+  ] as const
+  $columns = MediaSchema.$columns
+  @column()
+  declare altText: string | null
+  @column()
+  declare caption: string | null
+  @column()
+  declare checksumSha256: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare durationSeconds: number | null
+  @column()
+  declare height: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare kind: string
+  @column()
+  declare mimeType: string | null
+  @column()
+  declare originalName: string | null
+  @column()
+  declare posterKey: string | null
+  @column()
+  declare sizeBytes: bigint | number | null
+  @column()
+  declare storageKey: string | null
+  @column()
+  declare title: string | null
+  @column()
+  declare variants: any | null
+  @column()
+  declare width: number | null
+  @column()
+  declare youtubeId: string | null
+  @column()
+  declare youtubeStartSeconds: number | null
+}
+
+export class ProfileSchema extends BaseModel {
+  static $columns = [
+    'aboutMd',
+    'availabilityText',
+    'avatarMediaId',
+    'displayName',
+    'emailPublic',
+    'fullName',
+    'headline',
+    'heroIntroMd',
+    'id',
+    'location',
+    'phonePublic',
+    'resumeMediaId',
+    'tagline',
+    'updatedAt',
+  ] as const
+  $columns = ProfileSchema.$columns
+  @column()
+  declare aboutMd: string | null
+  @column()
+  declare availabilityText: string | null
+  @column()
+  declare avatarMediaId: number | null
+  @column()
+  declare displayName: string | null
+  @column()
+  declare emailPublic: string | null
+  @column()
+  declare fullName: string
+  @column()
+  declare headline: string | null
+  @column()
+  declare heroIntroMd: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare location: string | null
+  @column()
+  declare phonePublic: string | null
+  @column()
+  declare resumeMediaId: number | null
+  @column()
+  declare tagline: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class ProfileFactSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'id',
+    'isVisible',
+    'label',
+    'sortOrder',
+    'updatedAt',
+    'value',
+  ] as const
+  $columns = ProfileFactSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare label: string
+  @column()
+  declare sortOrder: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare value: string
+}
+
+export class ProjectMediaSchema extends BaseModel {
+  static $columns = ['mediaId', 'projectId', 'sortOrder'] as const
+  $columns = ProjectMediaSchema.$columns
+  @column()
+  declare mediaId: number
+  @column({ isPrimary: true })
+  declare projectId: number
+  @column()
+  declare sortOrder: number
+}
+
+export class ProjectSkillSchema extends BaseModel {
+  static $columns = ['projectId', 'skillId', 'sortOrder'] as const
+  $columns = ProjectSkillSchema.$columns
+  @column({ isPrimary: true })
+  declare projectId: number
+  @column()
+  declare skillId: number
+  @column()
+  declare sortOrder: number
+}
+
+export class ProjectSchema extends BaseModel {
+  static $columns = [
+    'coverMediaId',
+    'createdAt',
+    'demoUrl',
+    'descriptionMd',
+    'endedOn',
+    'id',
+    'isFeatured',
+    'kind',
+    'publishedAt',
+    'repoUrl',
+    'role',
+    'slug',
+    'sortOrder',
+    'startedOn',
+    'status',
+    'summary',
+    'title',
+    'updatedAt',
+  ] as const
+  $columns = ProjectSchema.$columns
+  @column()
+  declare coverMediaId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare demoUrl: string | null
+  @column()
+  declare descriptionMd: string
+  @column.date()
+  declare endedOn: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isFeatured: boolean
+  @column()
+  declare kind: string | null
+  @column.dateTime()
+  declare publishedAt: DateTime | null
+  @column()
+  declare repoUrl: string | null
+  @column()
+  declare role: string | null
+  @column()
+  declare slug: string
+  @column()
+  declare sortOrder: number
+  @column.date()
+  declare startedOn: DateTime | null
+  @column()
+  declare status: string
+  @column()
+  declare summary: string
+  @column()
+  declare title: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class SiteSettingSchema extends BaseModel {
+  static $columns = [
+    'contactFormEnabled',
+    'footerText',
+    'id',
+    'metaDescription',
+    'ogImageMediaId',
+    'siteTitle',
+    'updatedAt',
+  ] as const
+  $columns = SiteSettingSchema.$columns
+  @column()
+  declare contactFormEnabled: boolean
+  @column()
+  declare footerText: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare metaDescription: string | null
+  @column()
+  declare ogImageMediaId: number | null
+  @column()
+  declare siteTitle: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class SkillCategorySchema extends BaseModel {
+  static $columns = [
+    'accent',
+    'createdAt',
+    'description',
+    'id',
+    'isVisible',
+    'name',
+    'slug',
+    'sortOrder',
+    'updatedAt',
+  ] as const
+  $columns = SkillCategorySchema.$columns
+  @column()
+  declare accent: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare name: string
+  @column()
+  declare slug: string
+  @column()
+  declare sortOrder: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class SkillMediaSchema extends BaseModel {
+  static $columns = ['mediaId', 'skillId', 'sortOrder'] as const
+  $columns = SkillMediaSchema.$columns
+  @column()
+  declare mediaId: number
+  @column({ isPrimary: true })
+  declare skillId: number
+  @column()
+  declare sortOrder: number
+}
+
+export class SkillSchema extends BaseModel {
+  static $columns = [
+    'categoryId',
+    'createdAt',
+    'descriptionMd',
+    'id',
+    'isVisible',
+    'level',
+    'name',
+    'slug',
+    'sortOrder',
+    'summary',
+    'updatedAt',
+    'yearsExperience',
+  ] as const
+  $columns = SkillSchema.$columns
+  @column()
+  declare categoryId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare descriptionMd: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare level: string | null
+  @column()
+  declare name: string
+  @column()
+  declare slug: string
+  @column()
+  declare sortOrder: number
+  @column()
+  declare summary: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare yearsExperience: string | null
+}
+
+export class SocialLinkSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'id',
+    'isVisible',
+    'label',
+    'platform',
+    'sortOrder',
+    'updatedAt',
+    'url',
+  ] as const
+  $columns = SocialLinkSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isVisible: boolean
+  @column()
+  declare label: string
+  @column()
+  declare platform: string
+  @column()
+  declare sortOrder: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare url: string
 }
 
 export class UserSchema extends BaseModel {
