@@ -4,6 +4,7 @@ import db from '@adonisjs/lucid/services/db'
 import Media from '#models/media'
 import { MediaService } from '#services/media_service'
 import { YouTubeService } from '#services/youtube_service'
+import PublicMediaTransformer from '#transformers/public_media_transformer'
 import { createYoutubeValidator, updateMediaValidator } from '#validators/media'
 import type { MediaKind } from '@bunn/shared'
 
@@ -37,7 +38,7 @@ export default class MediaController {
     const paginated = await query.paginate(page, perPage)
 
     return response.ok({
-      data: paginated.all(),
+      data: PublicMediaTransformer.transformMany(paginated.all()),
       meta: {
         total: paginated.total,
         page: paginated.currentPage,
@@ -106,9 +107,10 @@ export default class MediaController {
       usages.push({ type: 'experience', id: e.id, label: `Galeri Pengalaman: ${e.title}` })
     }
 
+    const transformed = PublicMediaTransformer.transform(media)
     return response.ok({
       data: {
-        ...media.toJSON(),
+        ...transformed,
         usages,
       },
     })
@@ -163,8 +165,10 @@ export default class MediaController {
       createdRecords.push(media)
     }
 
+    const transformed = PublicMediaTransformer.transformMany(createdRecords)
+
     return response.created({
-      data: createdRecords.length === 1 ? createdRecords[0] : createdRecords,
+      data: createdRecords.length === 1 ? transformed[0] : transformed,
     })
   }
 
@@ -195,7 +199,7 @@ export default class MediaController {
       caption: null,
     })
 
-    return response.created({ data: media })
+    return response.created({ data: PublicMediaTransformer.transform(media) })
   }
 
   /**
@@ -212,7 +216,7 @@ export default class MediaController {
 
     await media.save()
 
-    return response.ok({ data: media })
+    return response.ok({ data: PublicMediaTransformer.transform(media) })
   }
 
   /**

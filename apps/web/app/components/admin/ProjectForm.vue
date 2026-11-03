@@ -382,8 +382,8 @@ const previewHtml = computed(() => {
         <h4>Sampul Utama (Cover) *</h4>
         <div class="cover-frame">
           <img
-            v-if="selectedCover?.urls?.md || selectedCover?.urls?.original"
-            :src="(selectedCover.urls.md || selectedCover.urls.original) ?? undefined"
+            v-if="selectedCover?.urls?.md || selectedCover?.urls?.original || selectedCover?.urls?.thumb"
+            :src="(selectedCover.urls.md || selectedCover.urls.original || selectedCover.urls.thumb) ?? undefined"
             :alt="selectedCover.altText || ''"
           >
           <div v-else class="empty-cover">Belum ada sampul terpilih</div>

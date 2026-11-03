@@ -267,8 +267,14 @@ useSeoMeta({
           <div v-else-if="item.kind === 'youtube'" class="placeholder-media">
             ▶ YouTube
           </div>
-          <div v-else class="placeholder-media">
+          <div v-else-if="item.kind === 'document'" class="placeholder-media">
             📄 PDF
+          </div>
+          <div v-else-if="item.kind === 'video'" class="placeholder-media">
+            🎬 Video
+          </div>
+          <div v-else class="placeholder-media">
+            🖼️ Gambar
           </div>
 
           <span class="kind-badge">{{ item.kind }}</span>

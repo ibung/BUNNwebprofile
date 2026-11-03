@@ -262,8 +262,14 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
                 <div v-else-if="item.kind === 'youtube'" class="placeholder-box">
                   ▶ YouTube
                 </div>
-                <div v-else class="placeholder-box">
+                <div v-else-if="item.kind === 'document'" class="placeholder-box">
                   📄 PDF
+                </div>
+                <div v-else-if="item.kind === 'video'" class="placeholder-box">
+                  🎬 Video
+                </div>
+                <div v-else class="placeholder-box">
+                  🖼️ Gambar
                 </div>
 
                 <div v-if="isSelected(item.id)" class="selected-badge">
