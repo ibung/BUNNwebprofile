@@ -49,13 +49,13 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-058 Cek responsif (360, 768, 1280 px), aksesibilitas, bandingkan dengan `docs/design-reference/index.html`
 
 ## Fase 6: CMS (/admin)
-- [ ] T-060 Rute admin SPA, middleware, `useAdminApi()`, halaman login, layout panel
-- [ ] T-061 Dasbor
-- [ ] T-062 Pustaka media dan pemilih media
-- [ ] T-063 Layar profil (bertab), pengaturan
-- [ ] T-064 Layar proyek (daftar, formulir, editor markdown dengan pratinjau, seret untuk urut)
-- [ ] T-065 Layar skill dan kategori, perjalanan
-- [ ] T-066 Kotak pesan
+- [x] T-060 Rute admin SPA, middleware, `useAdminApi()`, halaman login, layout panel
+- [x] T-061 Dasbor
+- [x] T-062 Pustaka media dan pemilih media
+- [x] T-063 Layar profil (bertab), pengaturan
+- [x] T-064 Layar proyek (daftar, formulir, editor markdown dengan pratinjau, seret untuk urut)
+- [x] T-065 Layar skill dan kategori, perjalanan
+- [x] T-066 Kotak pesan
 
 ## Fase 7: Deploy
 - [ ] T-070 `apps/web/Dockerfile` dan `apps/api/Dockerfile` sesuai `docs/DEPLOYMENT.md`, plus `.dockerignore`
