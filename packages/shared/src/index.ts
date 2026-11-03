@@ -50,6 +50,7 @@ export const ALLOWED_UPLOAD_MIME = [
   'video/webm',
   'application/pdf',
 ] as const
+export type AllowedUploadMime = (typeof ALLOWED_UPLOAD_MIME)[number]
 
 export const IMAGE_VARIANTS = { thumb: 480, md: 960, lg: 1600 } as const
 export type ImageVariant = keyof typeof IMAGE_VARIANTS

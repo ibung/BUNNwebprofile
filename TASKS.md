@@ -20,10 +20,10 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-014 Perintah `node ace admin:reset-password` (interaktif)
 
 ## Fase 2: Media
-- [ ] T-020 Layanan media: sniffing tipe, penulisan berkas, varian WebP dengan `sharp`, pembersihan metadata, penghapusan berkas
-- [ ] T-021 `POST /api/admin/media/upload`, `POST /api/admin/media/youtube` (parser link, tanpa fetch), CRUD media, daftar "dipakai di"
-- [ ] T-022 `GET /uploads/*` dengan header cache dan keamanan yang benar, tolak path traversal
-- [ ] T-023 Uji untuk parser YouTube dan validasi unggahan
+- [x] T-020 Layanan media: sniffing tipe, penulisan berkas, varian WebP dengan `sharp`, pembersihan metadata, penghapusan berkas
+- [x] T-021 `POST /api/admin/media/upload`, `POST /api/admin/media/youtube` (parser link, tanpa fetch), CRUD media, daftar "dipakai di"
+- [x] T-022 `GET /uploads/*` dengan header cache dan keamanan yang benar, tolak path traversal
+- [x] T-023 Uji untuk parser YouTube dan validasi unggahan
 
 ## Fase 3: CRUD admin
 - [ ] T-030 Profil, fakta, tautan sosial, sorotan, pengaturan situs
