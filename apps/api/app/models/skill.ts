@@ -43,7 +43,7 @@ export default class Skill extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  @belongsTo(() => SkillCategory)
+  @belongsTo(() => SkillCategory, { foreignKey: 'categoryId' })
   declare category: BelongsTo<typeof SkillCategory>
 
   @manyToMany(() => Media, {

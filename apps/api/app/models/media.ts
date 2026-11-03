@@ -53,7 +53,7 @@ export default class Media extends BaseModel {
   @column()
   declare youtubeStartSeconds: number | null
 
-  @column()
+  @column({ columnName: 'checksum_sha256' })
   declare checksumSha256: string | null
 
   @column.dateTime({ autoCreate: true })
