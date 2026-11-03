@@ -15,8 +15,15 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/shared/package.json ./packages/shared/
 COPY apps/api/package.json ./apps/api/
 
-# Unduh dan pasang dependensi monorepo untuk target @bunn/api
-RUN pnpm install --frozen-lockfile --filter @bunn/api...
+# Konfigurasi ketahanan unduhan pnpm & shared store
+RUN pnpm config set store-dir /root/.pnpm-store && \
+    pnpm config set fetch-retries 5 && \
+    pnpm config set fetch-retry-maxtimeout 180000 && \
+    pnpm config set network-concurrency 4
+
+# Unduh dan pasang dependensi monorepo untuk target @bunn/api dengan BuildKit cache
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile --filter @bunn/api...
 
 # Salin source code
 COPY packages/shared/ ./packages/shared/
@@ -29,7 +36,8 @@ RUN pnpm --filter @bunn/shared build
 RUN pnpm --filter @bunn/api build
 
 # Siapkan direktori deploy paket produksi bersih dengan dependensi runtime
-RUN pnpm --filter @bunn/api --prod deploy --legacy /app/deploy
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+    pnpm --filter @bunn/api --prod deploy --legacy /app/deploy
 
 # Salin artefak hasil build AdonisJS ke folder deploy
 RUN cp -r apps/api/build/* /app/deploy/
