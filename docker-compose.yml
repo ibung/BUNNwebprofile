@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      network: host
     restart: unless-stopped
     environment:
       NUXT_API_INTERNAL_URL: http://api:3333
@@ -22,6 +23,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+      network: host
     restart: unless-stopped
     env_file: apps/api/.env
     environment:

@@ -7,8 +7,8 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Aktifkan pnpm via corepack
-RUN corepack enable
+# Pasang pnpm secara global
+RUN npm install -g pnpm@10.28.0
 
 # Salin konfigurasi workspace dan lockfile untuk optimalisasi layer cache
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
