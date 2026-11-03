@@ -13,11 +13,11 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-006 `pnpm db:dev` menjalankan PostgreSQL lokal, `pnpm dev` menjalankan web dan api bersamaan
 
 ## Fase 1: Database dan API inti
-- [ ] T-010 Migrasi dan model sesuai `docs/DATABASE.md` (users sampai contact_messages), plus enum di `packages/shared`
-- [ ] T-011 `GET /api/health` dan penanganan galat berbentuk `{ error: { code, message, details } }`
-- [ ] T-012 Auth admin: login, logout, me, ganti kata sandi, CSRF, pembatasan laju
-- [ ] T-013 `initial_seeder` (admin dari env, `profile` dan `site_settings` berisi `TODO:`) dan `demo_seeder` khusus dev
-- [ ] T-014 Perintah `node ace admin:reset-password` (interaktif)
+- [x] T-010 Migrasi dan model sesuai `docs/DATABASE.md` (users sampai contact_messages), plus enum di `packages/shared`
+- [x] T-011 `GET /api/health` dan penanganan galat berbentuk `{ error: { code, message, details } }`
+- [x] T-012 Auth admin: login, logout, me, ganti kata sandi, CSRF, pembatasan laju
+- [x] T-013 `initial_seeder` (admin dari env, `profile` dan `site_settings` berisi `TODO:`) dan `demo_seeder` khusus dev
+- [x] T-014 Perintah `node ace admin:reset-password` (interaktif)
 
 ## Fase 2: Media
 - [ ] T-020 Layanan media: sniffing tipe, penulisan berkas, varian WebP dengan `sharp`, pembersihan metadata, penghapusan berkas
