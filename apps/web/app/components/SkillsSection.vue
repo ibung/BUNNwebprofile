@@ -35,7 +35,13 @@ defineProps<{
             :to="`/skills/${s.slug}`"
             class="pill"
           >
-            {{ s.name }}
+            <img
+              v-if="s.icon?.urls?.thumb || s.icon?.urls?.original"
+              :src="s.icon.urls.thumb || s.icon.urls.original"
+              :alt="s.name"
+              class="pill-icon"
+            >
+            <span>{{ s.name }}</span>
           </NuxtLink>
         </div>
       </div>
@@ -99,6 +105,21 @@ defineProps<{
   flex-wrap: wrap;
   gap: 4px;
   margin-top: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.pill-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .highlight-note {

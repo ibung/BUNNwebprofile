@@ -3,6 +3,7 @@ import vine from '@vinejs/vine'
 export const updateProfileValidator = vine.compile(
   vine.object({
     fullName: vine.string().trim().maxLength(120),
+    heroPrefix: vine.string().trim().maxLength(60).nullable().optional(),
     displayName: vine.string().trim().maxLength(60).nullable().optional(),
     headline: vine.string().trim().maxLength(160).nullable().optional(),
     tagline: vine.string().trim().maxLength(280).nullable().optional(),

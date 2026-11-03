@@ -10,8 +10,8 @@ defineProps<{
 
 <template>
   <section id="tentang">
-    <span class="label">Tentang saya</span>
-    <h2>Membangun, lalu <em>menguji.</em></h2>
+    <span class="label">Tentang {{ profile.displayName || profile.fullName || 'saya' }}</span>
+    <h2>{{ profile.tagline || 'Membangun, lalu menguji.' }}</h2>
 
     <div class="about-grid">
       <div class="about-text">

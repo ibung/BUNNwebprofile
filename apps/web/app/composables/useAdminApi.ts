@@ -17,6 +17,7 @@ export type { PublicMedia } from '@bunn/shared'
 export interface AdminProfileData {
   id: number
   fullName: string
+  heroPrefix?: string | null
   displayName: string | null
   headline: string | null
   tagline: string | null
@@ -55,8 +56,10 @@ export interface AdminSocialLink {
   platform: SocialPlatform
   label: string
   url: string
+  mediaId?: number | null
   sortOrder: number
   isVisible: boolean
+  media?: PublicMedia | null
 }
 
 export interface AdminHighlight {

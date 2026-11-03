@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 
+withDefaults(
+  defineProps<{
+    brandName?: string
+  }>(),
+  {
+    brandName: 'Ibnu Hilmi Athaillah',
+  }
+)
+
 const route = useRoute()
 
 const getLink = (hash: string) => {
@@ -11,7 +20,7 @@ const getLink = (hash: string) => {
 <template>
   <nav class="nav" aria-label="Navigasi Utama">
     <NuxtLink :to="getLink('#top')" class="logo">
-      Ibnu <i>Hilmi</i> Athaillah
+      {{ brandName }}
     </NuxtLink>
 
     <ul class="nav-links">

@@ -6,7 +6,7 @@ import { ReorderService } from '#services/reorder_service'
 
 export default class SocialLinksController {
   async index({ response }: HttpContext) {
-    const links = await SocialLink.query().orderBy('sortOrder', 'asc')
+    const links = await SocialLink.query().preload('media').orderBy('sortOrder', 'asc')
     return response.ok({ data: links })
   }
 
@@ -23,6 +23,7 @@ export default class SocialLinksController {
     }
 
     const link = await SocialLink.create(payload)
+    await link.load('media')
     return response.created({ data: link })
   }
 
@@ -37,6 +38,7 @@ export default class SocialLinksController {
 
     link.merge(payload)
     await link.save()
+    await link.load('media')
 
     return response.ok({ data: link })
   }

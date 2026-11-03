@@ -58,7 +58,7 @@ useSeoMeta({
 
       <form class="login-form" @submit.prevent="handleLogin">
         <div v-if="errorMessage" class="alert-error" role="alert">
-          ⚠ {{ errorMessage }}
+          {{ errorMessage }}
         </div>
 
         <div class="form-group">

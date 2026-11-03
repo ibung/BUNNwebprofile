@@ -9,14 +9,14 @@ const { user, logout } = useAdminAuth()
 const isMobileNavOpen = ref(false)
 
 const navLinks = [
-  { label: 'Dasbor', to: '/admin', icon: '📊' },
-  { label: 'Profil', to: '/admin/profile', icon: '👤' },
-  { label: 'Proyek', to: '/admin/projects', icon: '💼' },
-  { label: 'Keahlian', to: '/admin/skills', icon: '⚡' },
-  { label: 'Perjalanan', to: '/admin/experiences', icon: '🗺️' },
-  { label: 'Pustaka Media', to: '/admin/media', icon: '🖼️' },
-  { label: 'Kotak Pesan', to: '/admin/messages', icon: '✉️' },
-  { label: 'Pengaturan', to: '/admin/settings', icon: '⚙️' },
+  { label: 'Dasbor', to: '/admin', icon: 'dashboard' },
+  { label: 'Profil', to: '/admin/profile', icon: 'profile' },
+  { label: 'Proyek', to: '/admin/projects', icon: 'projects' },
+  { label: 'Keahlian', to: '/admin/skills', icon: 'skills' },
+  { label: 'Perjalanan', to: '/admin/experiences', icon: 'experiences' },
+  { label: 'Pustaka Media', to: '/admin/media', icon: 'media' },
+  { label: 'Kotak Pesan', to: '/admin/messages', icon: 'messages' },
+  { label: 'Pengaturan', to: '/admin/settings', icon: 'settings' },
 ]
 
 const isActive = (path: string) => {
@@ -61,7 +61,16 @@ const isActive = (path: string) => {
               :class="{ 'nav-item--active': isActive(link.to) }"
               @click="isMobileNavOpen = false"
             >
-              <span class="nav-icon">{{ link.icon }}</span>
+              <span class="nav-icon">
+                <svg v-if="link.icon === 'dashboard'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <svg v-else-if="link.icon === 'profile'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg v-else-if="link.icon === 'projects'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <svg v-else-if="link.icon === 'skills'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <svg v-else-if="link.icon === 'experiences'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                <svg v-else-if="link.icon === 'media'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                <svg v-else-if="link.icon === 'messages'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <svg v-else-if="link.icon === 'settings'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </span>
               <span>{{ link.label }}</span>
             </NuxtLink>
           </li>
@@ -99,7 +108,8 @@ const isActive = (path: string) => {
 
         <div class="topbar-right">
           <NuxtLink to="/" target="_blank" class="topbar-site-link">
-            🌐 Buka Situs Publik ↗
+            <svg class="topbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Buka Situs Publik ↗</span>
           </NuxtLink>
           <button type="button" class="topbar-logout" @click="logout">
             Keluar
@@ -209,7 +219,18 @@ const isActive = (path: string) => {
 }
 
 .nav-icon {
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.svg-icon {
+  width: 18px;
+  height: 18px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sidebar-footer {
@@ -292,6 +313,9 @@ const isActive = (path: string) => {
 }
 
 .topbar-site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
@@ -299,6 +323,13 @@ const isActive = (path: string) => {
   border: 1.5px solid var(--ink);
   border-radius: 8px;
   background: var(--cream);
+}
+
+.topbar-svg {
+  width: 16px;
+  height: 16px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .topbar-site-link:hover {

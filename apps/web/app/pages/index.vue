@@ -40,7 +40,10 @@ if (homeData.value) {
 
 <template>
   <div v-if="homeData" class="page-home">
-    <HeroSection :profile="homeData.profile" />
+    <HeroSection
+      :profile="homeData.profile"
+      :site-title="homeData.settings.siteTitle"
+    />
 
     <AboutSection
       :profile="homeData.profile"
@@ -65,7 +68,7 @@ if (homeData.value) {
 
     <TheFooter
       :footer-text="homeData.settings.footerText"
-      :site-title="homeData.settings.siteTitle"
+      :site-title="homeData.settings.siteTitle || homeData.profile.fullName"
     />
   </div>
 

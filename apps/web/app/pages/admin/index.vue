@@ -120,17 +120,17 @@ useSeoMeta({
 
         <ul class="attention-list">
           <li v-if="newMessagesCount > 0">
-            ✉ Terdapat <strong>{{ newMessagesCount }} pesan kontak baru</strong> yang belum dibaca.
+            Terdapat <strong>{{ newMessagesCount }} pesan kontak baru</strong> yang belum dibaca.
             <NuxtLink to="/admin/messages" class="action-link">Buka Kotak Pesan →</NuxtLink>
           </li>
 
           <li v-if="mediaMissingAlt.length > 0">
-            🖼️ <strong>{{ mediaMissingAlt.length }} gambar</strong> belum memiliki alt teks (deskripsi aksesibilitas).
+            <strong>{{ mediaMissingAlt.length }} gambar</strong> belum memiliki alt teks (deskripsi aksesibilitas).
             <NuxtLink to="/admin/media" class="action-link">Lengkapi di Pustaka Media →</NuxtLink>
           </li>
 
           <li v-if="incompleteProjects.length > 0">
-            💼 <strong>{{ incompleteProjects.length }} proyek</strong> belum memiliki sampul cover utama.
+            <strong>{{ incompleteProjects.length }} proyek</strong> belum memiliki sampul cover utama.
             <NuxtLink to="/admin/projects" class="action-link">Atur Proyek →</NuxtLink>
           </li>
         </ul>
@@ -141,22 +141,22 @@ useSeoMeta({
         <h3>Tautan Cepat</h3>
         <div class="quick-links-grid">
           <NuxtLink to="/admin/projects" class="card quick-card">
-            <h4>💼 Kelola Proyek</h4>
+            <h4>Kelola Proyek</h4>
             <p>Tambah, edit deskripsi markdown, dan atur urutan tampilan proyek.</p>
           </NuxtLink>
 
           <NuxtLink to="/admin/media" class="card quick-card">
-            <h4>🖼️ Pustaka Media</h4>
+            <h4>Pustaka Media</h4>
             <p>Unggah foto, video demo, dan tautkan video YouTube.</p>
           </NuxtLink>
 
           <NuxtLink to="/admin/profile" class="card quick-card">
-            <h4>👤 Profil & Fakta</h4>
+            <h4>Profil & Narasi</h4>
             <p>Sunting narasi tentang saya, headline, tautan sosial, dan sorotan.</p>
           </NuxtLink>
 
           <NuxtLink to="/admin/settings" class="card quick-card">
-            <h4>⚙️ Pengaturan Situs</h4>
+            <h4>Pengaturan Situs</h4>
             <p>Atur judul situs, Open Graph image, teks footer, dan ganti sandi.</p>
           </NuxtLink>
         </div>

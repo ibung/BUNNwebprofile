@@ -112,6 +112,7 @@ export interface PublicSiteSettings {
 
 export interface PublicProfile {
   fullName: string
+  heroPrefix?: string | null
   displayName: string
   headline: string
   tagline: string | null
@@ -131,9 +132,12 @@ export interface PublicProfileFact {
 }
 
 export interface PublicSocialLink {
+  id?: number
   platform: SocialPlatform
   label: string
   url: string
+  mediaId?: number | null
+  icon?: PublicMedia | null
 }
 
 export interface PublicHighlight {
@@ -150,6 +154,7 @@ export interface PublicSkillItem {
   level: SkillLevel | null
   summary: string
   yearsExperience: number | null
+  icon?: PublicMedia | null
 }
 
 export interface PublicSkillCategory {

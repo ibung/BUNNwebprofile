@@ -215,7 +215,7 @@ useSeoMeta({
           <div class="modal-body">
             <div class="msg-meta-box">
               <p>Pengirim: <strong>{{ activeMessage.name }}</strong></p>
-              <p>Email: <a :href="`mailto:${activeMessage.email}`" class="mail-link">✉ {{ activeMessage.email }}</a></p>
+              <p>Email: <a :href="`mailto:${activeMessage.email}`" class="mail-link">{{ activeMessage.email }}</a></p>
               <p>Waktu Masuk: <strong>{{ formatDate(activeMessage.createdAt) }}</strong></p>
               <p>Status: <span class="status-pill">{{ activeMessage.status }}</span></p>
             </div>

@@ -30,7 +30,9 @@ const isSavingProfile = ref(false)
 
 // Media Picker Modal State
 const isMediaPickerOpen = ref(false)
-const mediaPickerTarget = ref<'avatar' | 'resume'>('avatar')
+const mediaPickerTarget = ref<'avatar' | 'resume' | 'newSocial' | 'editSocial'>('avatar')
+const targetSocialId = ref<number | null>(null)
+const newSocialMedia = ref<PublicMedia | null>(null)
 
 // Fakta State
 const facts = ref<AdminProfileFact[]>([])
@@ -38,10 +40,16 @@ const newFact = ref({ label: '', value: '' })
 
 // Sosial State
 const socials = ref<AdminSocialLink[]>([])
-const newSocial = ref<{ platform: (typeof SOCIAL_PLATFORMS)[number]; label: string; url: string }>({
+const newSocial = ref<{
+  platform: (typeof SOCIAL_PLATFORMS)[number]
+  label: string
+  url: string
+  mediaId?: number | null
+}>({
   platform: 'github',
   label: '',
   url: '',
+  mediaId: null,
 })
 
 // Highlights State
@@ -97,6 +105,7 @@ const handleSaveProfile = async () => {
     const updated = await adminApi.updateProfile({
       fullName: profileForm.value.fullName,
       displayName: profileForm.value.displayName,
+      heroPrefix: profileForm.value.heroPrefix,
       headline: profileForm.value.headline,
       tagline: profileForm.value.tagline,
       heroIntroMd: profileForm.value.heroIntroMd,
@@ -129,16 +138,55 @@ const openResumePicker = () => {
   isMediaPickerOpen.value = true
 }
 
-const handleMediaSelected = (media: PublicMedia | PublicMedia[]) => {
+const openSocialIconPicker = (socialId?: number) => {
+  if (socialId) {
+    mediaPickerTarget.value = 'editSocial'
+    targetSocialId.value = socialId
+  } else {
+    mediaPickerTarget.value = 'newSocial'
+  }
+  isMediaPickerOpen.value = true
+}
+
+const handleMediaSelected = async (media: PublicMedia | PublicMedia[]) => {
   const item = Array.isArray(media) ? media[0] : media
   if (!item) return
 
   if (mediaPickerTarget.value === 'avatar') {
     selectedAvatar.value = item
     profileForm.value.avatarMediaId = item.id
-  } else {
+  } else if (mediaPickerTarget.value === 'resume') {
     selectedResume.value = item
     profileForm.value.resumeMediaId = item.id
+  } else if (mediaPickerTarget.value === 'newSocial') {
+    newSocialMedia.value = item
+    newSocial.value.mediaId = item.id
+  } else if (mediaPickerTarget.value === 'editSocial' && targetSocialId.value) {
+    try {
+      const updated = await adminApi.updateSocialLink(targetSocialId.value, { mediaId: item.id })
+      const idx = socials.value.findIndex((s) => s.id === targetSocialId.value)
+      if (idx !== -1) {
+        socials.value[idx] = updated
+      }
+      showMessage('success', 'Ikon tautan sosial berhasil diperbarui.')
+    } catch (err) {
+      console.error(err)
+      showMessage('error', 'Gagal memperbarui ikon.')
+    }
+  }
+}
+
+const handleRemoveSocialIcon = async (social: AdminSocialLink) => {
+  try {
+    const updated = await adminApi.updateSocialLink(social.id, { mediaId: null })
+    const idx = socials.value.findIndex((s) => s.id === social.id)
+    if (idx !== -1) {
+      socials.value[idx] = updated
+    }
+    showMessage('success', 'Ikon tautan sosial berhasil dihapus.')
+  } catch (err) {
+    console.error(err)
+    showMessage('error', 'Gagal menghapus ikon.')
   }
 }
 
@@ -190,10 +238,17 @@ const handleAddSocial = async () => {
       platform: newSocial.value.platform,
       label: newSocial.value.label.trim(),
       url: newSocial.value.url.trim(),
+      mediaId: newSocial.value.mediaId || null,
       isVisible: true,
     })
     socials.value.push(created)
-    newSocial.value = { platform: 'github', label: '', url: '' }
+    newSocial.value = {
+      platform: 'github',
+      label: '',
+      url: '',
+      mediaId: null,
+    }
+    newSocialMedia.value = null
     showMessage('success', 'Tautan sosial berhasil ditambahkan.')
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
@@ -339,27 +394,32 @@ useSeoMeta({
       <!-- TAB 1: PROFIL UTAMA -->
       <section v-if="activeTab === 'main'" class="card main-profile-card">
         <form @submit.prevent="handleSaveProfile">
-          <div class="form-grid-2">
+          <div class="form-grid-3">
             <div class="form-group">
               <label for="fullName">Nama Lengkap *</label>
-              <input id="fullName" v-model="profileForm.fullName" type="text" required >
+              <input id="fullName" v-model="profileForm.fullName" type="text" required>
             </div>
 
             <div class="form-group">
               <label for="displayName">Nama Tampilan Hero (Display Name) *</label>
-              <input id="displayName" v-model="profileForm.displayName" type="text" required >
+              <input id="displayName" v-model="profileForm.displayName" type="text" required>
+            </div>
+
+            <div class="form-group">
+              <label for="heroPrefix">Awalan Sapaan Hero (Contoh: Halo, saya)</label>
+              <input id="heroPrefix" v-model="profileForm.heroPrefix" type="text" placeholder="Halo, saya">
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
               <label for="headline">Headline Singkat</label>
-              <input id="headline" v-model="profileForm.headline" type="text" >
+              <input id="headline" v-model="profileForm.headline" type="text">
             </div>
 
             <div class="form-group">
-              <label for="tagline">Tagline Tambahan</label>
-              <input id="tagline" v-model="profileForm.tagline" type="text" >
+              <label for="tagline">Tagline Tambahan (Judul Tentang Saya)</label>
+              <input id="tagline" v-model="profileForm.tagline" type="text">
             </div>
           </div>
 
@@ -376,17 +436,17 @@ useSeoMeta({
           <div class="form-grid-3">
             <div class="form-group">
               <label for="location">Lokasi</label>
-              <input id="location" v-model="profileForm.location" type="text" >
+              <input id="location" v-model="profileForm.location" type="text">
             </div>
 
             <div class="form-group">
               <label for="emailPublic">Email Publik</label>
-              <input id="emailPublic" v-model="profileForm.emailPublic" type="email" >
+              <input id="emailPublic" v-model="profileForm.emailPublic" type="email">
             </div>
 
             <div class="form-group">
               <label for="phonePublic">Nomor Kontak Publik</label>
-              <input id="phonePublic" v-model="profileForm.phonePublic" type="text" >
+              <input id="phonePublic" v-model="profileForm.phonePublic" type="text">
             </div>
           </div>
 
@@ -434,7 +494,11 @@ useSeoMeta({
               <label>Resume / CV (Dokumen PDF)</label>
               <div class="asset-preview-holder asset-preview-holder--doc">
                 <div v-if="selectedResume" class="doc-info">
-                  📄 {{ selectedResume.title || 'Dokumen Resume' }}
+                  <svg class="doc-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  <span>{{ selectedResume.title || 'Dokumen Resume' }}</span>
                 </div>
                 <div v-else class="empty-asset">Belum ada dokumen PDF</div>
               </div>
@@ -459,8 +523,7 @@ useSeoMeta({
 
           <div class="submit-row">
             <button type="submit" class="btn y save-btn" :disabled="isSavingProfile">
-              <span v-if="isSavingProfile">Menyimpan...</span>
-              <span v-else>Simpan Perubahan Profil</span>
+              {{ isSavingProfile ? 'Menyimpan...' : 'Simpan Profil Utama' }}
             </button>
           </div>
         </form>
@@ -521,11 +584,11 @@ useSeoMeta({
           <div class="form-grid-2">
             <div class="form-group">
               <label for="newFactLabel">Label (misal: Kampus, Status)</label>
-              <input id="newFactLabel" v-model="newFact.label" type="text" required >
+              <input id="newFactLabel" v-model="newFact.label" type="text" required>
             </div>
             <div class="form-group">
               <label for="newFactValue">Nilai / Isi</label>
-              <input id="newFactValue" v-model="newFact.value" type="text" required >
+              <input id="newFactValue" v-model="newFact.value" type="text" required>
             </div>
           </div>
           <button type="submit" class="btn y">+ Tambah Fakta</button>
@@ -536,7 +599,7 @@ useSeoMeta({
       <section v-else-if="activeTab === 'socials'" class="card tab-pane-card">
         <div class="pane-header">
           <h3>Daftar Tautan Sosial</h3>
-          <p>Tombol tautan profil yang tampil di bagian Kontak dan footer.</p>
+          <p>Tombol tautan profil yang tampil di bagian Kontak dan footer. Bisa pasang logo/ikon PNG/SVG kustom.</p>
         </div>
 
         <div class="items-list">
@@ -564,6 +627,16 @@ useSeoMeta({
               </button>
             </div>
 
+            <div class="social-icon-preview">
+              <img
+                v-if="soc.media?.urls?.thumb || soc.media?.urls?.original"
+                :src="soc.media.urls.thumb || soc.media.urls.original"
+                :alt="soc.label"
+                class="soc-thumb"
+              >
+              <span v-else class="soc-no-thumb">Tanpa Ikon</span>
+            </div>
+
             <div class="item-text">
               <span class="label">{{ soc.platform }}</span>
               <h4>{{ soc.label }}</h4>
@@ -571,6 +644,21 @@ useSeoMeta({
             </div>
 
             <div class="item-actions">
+              <button
+                type="button"
+                class="btn action-btn-sm"
+                @click="openSocialIconPicker(soc.id)"
+              >
+                {{ soc.mediaId ? 'Ganti Ikon' : '+ Ikon' }}
+              </button>
+              <button
+                v-if="soc.mediaId"
+                type="button"
+                class="btn action-btn-del"
+                @click="handleRemoveSocialIcon(soc)"
+              >
+                Hapus Ikon
+              </button>
               <button
                 type="button"
                 class="action-btn-del"
@@ -596,14 +684,28 @@ useSeoMeta({
             </div>
             <div class="form-group">
               <label for="newSocialLabel">Label Tombol (misal: GitHub, LinkedIn)</label>
-              <input id="newSocialLabel" v-model="newSocial.label" type="text" required >
+              <input id="newSocialLabel" v-model="newSocial.label" type="text" required>
             </div>
             <div class="form-group">
               <label for="newSocialUrl">URL (awali dengan https:// atau mailto:)</label>
-              <input id="newSocialUrl" v-model="newSocial.url" type="text" required >
+              <input id="newSocialUrl" v-model="newSocial.url" type="text" required>
             </div>
           </div>
-          <button type="submit" class="btn y">+ Tambah Sosial</button>
+
+          <div class="social-icon-picker-row">
+            <div v-if="newSocialMedia" class="new-icon-preview">
+              <img :src="newSocialMedia.urls?.thumb || newSocialMedia.urls?.original" alt="Ikon terpilih" class="soc-thumb">
+              <span>{{ newSocialMedia.title || 'Ikon Terpilih' }}</span>
+              <button type="button" class="btn-text-del" @click="newSocialMedia = null; newSocial.mediaId = null">
+                ✕ Batal Ikon
+              </button>
+            </div>
+            <button v-else type="button" class="btn" @click="openSocialIconPicker()">
+              + Pilih Ikon (PNG/SVG dari Pustaka Media)
+            </button>
+          </div>
+
+          <button type="submit" class="btn y" style="margin-top: 14px">+ Tambah Sosial</button>
         </form>
       </section>
 
@@ -671,16 +773,16 @@ useSeoMeta({
             </div>
             <div class="form-group">
               <label for="newHighlightValue">Angka / Teks Besar (misal: ±580, 100%)</label>
-              <input id="newHighlightValue" v-model="newHighlight.value" type="text" required >
+              <input id="newHighlightValue" v-model="newHighlight.value" type="text" required>
             </div>
             <div class="form-group">
               <label for="newHighlightLabel">Keterangan Singkat</label>
-              <input id="newHighlightLabel" v-model="newHighlight.label" type="text" required >
+              <input id="newHighlightLabel" v-model="newHighlight.label" type="text" required>
             </div>
           </div>
           <div class="form-group" style="margin-bottom: 16px">
             <label for="newHighlightNote">Catatan Tambahan (opsional)</label>
-            <input id="newHighlightNote" v-model="newHighlight.note" type="text" >
+            <input id="newHighlightNote" v-model="newHighlight.note" type="text">
           </div>
           <button type="submit" class="btn y">+ Tambah Sorotan</button>
         </form>
@@ -690,7 +792,7 @@ useSeoMeta({
     <!-- Media Picker Modal -->
     <MediaPickerModal
       :is-open="isMediaPickerOpen"
-      :allowed-kind="mediaPickerTarget === 'avatar' ? 'image' : 'document'"
+      :allowed-kind="mediaPickerTarget === 'resume' ? 'document' : 'image'"
       @close="isMediaPickerOpen = false"
       @select="handleMediaSelected"
     />
@@ -840,6 +942,19 @@ useSeoMeta({
   padding: 12px;
 }
 
+.doc-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.doc-svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .empty-asset {
   font-size: 12px;
   color: var(--muted);
@@ -911,6 +1026,33 @@ useSeoMeta({
   cursor: not-allowed;
 }
 
+.social-icon-preview {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.soc-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.soc-no-thumb {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.1;
+  padding: 2px;
+}
+
 .item-text {
   flex-grow: 1;
 }
@@ -925,6 +1067,11 @@ useSeoMeta({
   gap: 10px;
 }
 
+.action-btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
 .action-btn-del {
   background: #f8d7da;
   color: #721c24;
@@ -933,6 +1080,29 @@ useSeoMeta({
   padding: 6px 12px;
   font-weight: 700;
   font-size: 13px;
+  cursor: pointer;
+}
+
+.social-icon-picker-row {
+  margin: 14px 0;
+}
+
+.new-icon-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.btn-text-del {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
 }
 

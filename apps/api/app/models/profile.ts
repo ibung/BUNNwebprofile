@@ -13,6 +13,9 @@ export default class Profile extends BaseModel {
   declare fullName: string
 
   @column()
+  declare heroPrefix: string | null
+
+  @column()
   declare displayName: string | null
 
   @column()

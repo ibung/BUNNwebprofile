@@ -1,6 +1,8 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import type { SocialPlatform } from '@bunn/shared'
+import Media from '#models/media'
 
 export default class SocialLink extends BaseModel {
   @column({ isPrimary: true })
@@ -14,6 +16,12 @@ export default class SocialLink extends BaseModel {
 
   @column()
   declare url: string
+
+  @column()
+  declare mediaId: number | null
+
+  @belongsTo(() => Media, { foreignKey: 'mediaId' })
+  declare media: BelongsTo<typeof Media>
 
   @column()
   declare sortOrder: number

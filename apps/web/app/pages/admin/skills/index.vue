@@ -403,13 +403,19 @@ useSeoMeta({
 
             <div class="skill-info">
               <div class="skill-name-row">
+                <img
+                  v-if="skill.media?.[0]?.urls?.thumb || skill.media?.[0]?.urls?.original"
+                  :src="skill.media[0].urls.thumb || skill.media[0].urls.original"
+                  :alt="skill.name"
+                  class="skill-mini-icon"
+                >
                 <strong>{{ skill.name }}</strong>
                 <span v-if="skill.level" class="level-badge">{{ skill.level }}</span>
                 <span v-if="skill.yearsExperience" class="exp-badge">
                   {{ skill.yearsExperience }} thn
                 </span>
                 <span v-if="skill.media && skill.media.length > 0" class="media-count-badge">
-                  🖼️ {{ skill.media.length }} media
+                  {{ skill.media.length }} aset
                 </span>
               </div>
               <p class="skill-summary">{{ skill.summary }}</p>
@@ -626,13 +632,19 @@ useSeoMeta({
 
             <!-- Media Pendukung -->
             <div class="media-section-box">
-              <label>Media Pendukung (Sertifikat / Screenshot / Video Demo)</label>
+              <label>Logo / Ikon / Media Pendukung (PNG, WebP, SVG, Sertifikat, dll.)</label>
               <div class="skill-media-previews">
                 <div
                   v-for="(m, mIdx) in selectedSkillMedia"
                   :key="m.id"
                   class="skill-media-chip"
                 >
+                  <img
+                    v-if="m.urls?.thumb || m.urls?.original"
+                    :src="m.urls.thumb || m.urls.original"
+                    class="chip-thumb"
+                    alt=""
+                  >
                   <span>{{ m.title || m.kind }}</span>
                   <button
                     type="button"
@@ -649,7 +661,7 @@ useSeoMeta({
                 class="btn"
                 @click="isMediaPickerOpen = true"
               >
-                + Pilih Media dari Pustaka
+                + Pilih Logo / Media dari Pustaka
               </button>
             </div>
 
@@ -976,5 +988,20 @@ useSeoMeta({
   justify-content: flex-end;
   gap: 10px;
   margin-top: 12px;
+}
+
+.skill-mini-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.chip-thumb {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: 2px;
 }
 </style>

@@ -204,7 +204,7 @@ const previewHtml = computed(() => {
   <form class="project-form" @submit.prevent="handleSubmit()">
     <!-- Alert Error / Validasi -->
     <div v-if="errorMessage" class="alert-error" role="alert">
-      ⚠ {{ errorMessage }}
+      {{ errorMessage }}
       <ul v-if="validationErrors.length > 0" class="error-list">
         <li v-for="e in validationErrors" :key="e">{{ e }}</li>
       </ul>
@@ -504,7 +504,7 @@ const previewHtml = computed(() => {
           @click="handleSubmit('published')"
         >
           <span v-if="isSaving">Menyimpan...</span>
-          <span v-else>Terbitkan Proyek 🚀</span>
+          <span v-else>Terbitkan Proyek</span>
         </button>
       </div>
     </fieldset>

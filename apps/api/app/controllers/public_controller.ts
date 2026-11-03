@@ -83,7 +83,10 @@ export default class PublicController {
     const facts = await ProfileFact.query().where('isVisible', true).orderBy('sortOrder', 'asc')
 
     // 4. Social Links (isVisible = true)
-    const socials = await SocialLink.query().where('isVisible', true).orderBy('sortOrder', 'asc')
+    const socials = await SocialLink.query()
+      .where('isVisible', true)
+      .preload('media')
+      .orderBy('sortOrder', 'asc')
 
     // 5. Highlights (isVisible = true)
     const highlights = await Highlight.query().where('isVisible', true).orderBy('sortOrder', 'asc')
@@ -109,7 +112,12 @@ export default class PublicController {
       .where('isVisible', true)
       .orderBy('sortOrder', 'asc')
       .preload('skills', (skillQuery) => {
-        skillQuery.where('isVisible', true).orderBy('sortOrder', 'asc')
+        skillQuery
+          .where('isVisible', true)
+          .orderBy('sortOrder', 'asc')
+          .preload('media', (m) =>
+            m.pivotColumns(['sort_order']).orderBy('pivot_sort_order', 'asc')
+          )
       })
 
     // 8. Experiences (isVisible = true)
@@ -144,6 +152,7 @@ export default class PublicController {
       profile: {
         fullName: profile?.fullName || '',
         displayName: profile?.displayName || '',
+        heroPrefix: profile?.heroPrefix ?? 'Halo, saya',
         headline: profile?.headline || '',
         tagline: profile?.tagline ?? null,
         heroIntroHtml,
@@ -160,9 +169,12 @@ export default class PublicController {
         value: f.value,
       })),
       socials: socials.map((s): PublicSocialLink => ({
+        id: s.id,
         platform: s.platform,
         label: s.label,
         url: s.url,
+        mediaId: s.mediaId,
+        icon: PublicMediaTransformer.transform(s.media),
       })),
       highlights: {
         about: highlights
@@ -195,6 +207,7 @@ export default class PublicController {
           level: s.level,
           summary: s.summary,
           yearsExperience: s.yearsExperience !== null ? Number(s.yearsExperience) : null,
+          icon: PublicMediaTransformer.transform(s.media?.[0]),
         })),
       })),
       experiences: experiencesWithHtml,

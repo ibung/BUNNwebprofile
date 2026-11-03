@@ -6,6 +6,7 @@ export const createSocialLinkValidator = vine.compile(
     platform: vine.enum(SOCIAL_PLATFORMS),
     label: vine.string().trim().maxLength(60),
     url: vine.string().trim(),
+    mediaId: vine.number().nullable().optional(),
     sortOrder: vine.number().optional(),
     isVisible: vine.boolean().optional(),
   })
@@ -16,6 +17,7 @@ export const updateSocialLinkValidator = vine.compile(
     platform: vine.enum(SOCIAL_PLATFORMS).optional(),
     label: vine.string().trim().maxLength(60).optional(),
     url: vine.string().trim().optional(),
+    mediaId: vine.number().nullable().optional(),
     sortOrder: vine.number().optional(),
     isVisible: vine.boolean().optional(),
   })

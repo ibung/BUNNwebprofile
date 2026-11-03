@@ -218,7 +218,7 @@ useSeoMeta({
 
     <!-- Alert error upload -->
     <div v-if="uploadError" class="alert-error" role="alert">
-      ⚠ {{ uploadError }}
+      {{ uploadError }}
     </div>
 
     <!-- Filter & Pencarian -->
@@ -265,16 +265,16 @@ useSeoMeta({
             :alt="item.altText || ''"
           >
           <div v-else-if="item.kind === 'youtube'" class="placeholder-media">
-            ▶ YouTube
+            YouTube
           </div>
           <div v-else-if="item.kind === 'document'" class="placeholder-media">
-            📄 PDF
+            Dokumen PDF
           </div>
           <div v-else-if="item.kind === 'video'" class="placeholder-media">
-            🎬 Video
+            Video
           </div>
           <div v-else class="placeholder-media">
-            🖼️ Gambar
+            Gambar
           </div>
 
           <span class="kind-badge">{{ item.kind }}</span>
@@ -343,7 +343,7 @@ useSeoMeta({
             </div>
 
             <div v-if="ytError" class="alert-error">
-              ⚠ {{ ytError }}
+              {{ ytError }}
             </div>
 
             <div class="modal-footer-actions">
@@ -461,7 +461,7 @@ useSeoMeta({
                 </div>
 
                 <div v-if="detailError" class="alert-error">
-                  ⚠ {{ detailError }}
+                  {{ detailError }}
                 </div>
 
                 <div class="detail-actions">

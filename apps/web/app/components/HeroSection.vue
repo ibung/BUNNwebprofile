@@ -4,17 +4,18 @@ import TheNavbar from './TheNavbar.vue'
 
 defineProps<{
   profile: PublicProfile
+  siteTitle?: string
 }>()
 </script>
 
 <template>
   <header id="top" class="hero on-red">
-    <TheNavbar />
+    <TheNavbar :brand-name="siteTitle || profile.fullName || 'Ibnu Hilmi Athaillah'" />
 
     <div class="sun" aria-hidden="true" />
 
     <div class="hero-left">
-      <h1>Halo, saya <em>{{ profile.displayName || 'Ibnu' }}.</em></h1>
+      <h1>{{ profile.heroPrefix || 'Halo, saya' }} <em>{{ profile.displayName || 'Ibnu' }}.</em></h1>
 
       <div
         v-if="profile.heroIntroHtml"
@@ -40,7 +41,7 @@ defineProps<{
       <div class="body">
         <span class="code"><span>const</span> developer = {</span>
         <span class="code">&nbsp;&nbsp;nama: "{{ profile.fullName || 'Ibnu Hilmi Athaillah' }}",</span>
-        <span class="code">&nbsp;&nbsp;peran: ["Frontend", "QA"],</span>
+        <span class="code">&nbsp;&nbsp;peran: "{{ profile.headline || 'Frontend Developer & QA Tester' }}",</span>
         <span class="code">&nbsp;&nbsp;status: "{{ profile.availabilityText || 'Terbuka untuk proyek' }}"</span>
         <span class="code">}<span class="cursor" /></span>
       </div>

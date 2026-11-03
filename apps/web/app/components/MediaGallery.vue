@@ -84,17 +84,22 @@ onUnmounted(() => {
             <img :src="item.posterUrl" :alt="item.title || 'YouTube'" >
           </div>
           <div v-else class="thumb-placeholder">YouTube</div>
-          <div class="thumb-badge">▶ Video</div>
+          <div class="thumb-badge">Video</div>
         </div>
         <div v-else-if="item.kind === 'video'" class="thumbnail-container thumbnail--video">
           <div v-if="item.posterUrl" class="thumb-poster">
             <img :src="item.posterUrl" :alt="item.title || 'Video'" >
           </div>
           <div v-else class="thumb-placeholder">Video</div>
-          <div class="thumb-badge">▶ Video</div>
+          <div class="thumb-badge">Video</div>
         </div>
         <div v-else-if="item.kind === 'document'" class="thumbnail-container thumbnail--doc">
-          <div class="doc-icon">📄</div>
+          <div class="doc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </div>
           <div class="doc-title">{{ item.title || 'Dokumen PDF' }}</div>
         </div>
       </button>

@@ -260,16 +260,16 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
                   :alt="item.altText || ''"
                 >
                 <div v-else-if="item.kind === 'youtube'" class="placeholder-box">
-                  ▶ YouTube
+                  YouTube
                 </div>
                 <div v-else-if="item.kind === 'document'" class="placeholder-box">
-                  📄 PDF
+                  Dokumen PDF
                 </div>
                 <div v-else-if="item.kind === 'video'" class="placeholder-box">
-                  🎬 Video
+                  Video
                 </div>
                 <div v-else class="placeholder-box">
-                  🖼️ Gambar
+                  Gambar
                 </div>
 
                 <div v-if="isSelected(item.id)" class="selected-badge">
@@ -309,7 +309,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
           </div>
 
           <div v-if="uploadError" class="alert-error">
-            ⚠ {{ uploadError }}
+            {{ uploadError }}
           </div>
         </div>
 
@@ -338,7 +338,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
             </div>
 
             <div v-if="ytError" class="alert-error">
-              ⚠ {{ ytError }}
+              {{ ytError }}
             </div>
 
             <button type="submit" class="btn y" :disabled="isSubmittingYt">

@@ -52,6 +52,7 @@ Admin tunggal. Tidak ada endpoint pendaftaran.
 | Kolom | Tipe | Catatan |
 |---|---|---|
 | full_name | varchar(120) | wajib |
+| hero_prefix | varchar(60) | sapaan awal di hero, mis. "Halo, saya" (null boleh) |
 | display_name | varchar(60) | sapaan di hero, mis. "Ibnu" |
 | headline | varchar(160) | mis. "Frontend Developer dan QA Tester" |
 | tagline | varchar(280) | null boleh |
@@ -69,7 +70,7 @@ Admin tunggal. Tidak ada endpoint pendaftaran.
 `id, label varchar(60), value varchar(200), sort_order, is_visible bool default true`
 
 ### social_links
-`id, platform varchar(20) CHECK in SOCIAL_PLATFORMS, label varchar(60), url text, sort_order, is_visible`
+`id, platform varchar(20) CHECK in SOCIAL_PLATFORMS, label varchar(60), url text, media_id int FK media null ON DELETE SET NULL, sort_order, is_visible`
 Untuk `platform = 'email'`, `url` berbentuk `mailto:`.
 
 ### highlights
