@@ -49,16 +49,24 @@ if (homeData.value) {
       :profile="homeData.profile"
       :facts="homeData.facts"
       :highlights="homeData.highlights.about"
+      :settings="homeData.settings"
     />
 
-    <ProjectsSection :projects="homeData.featuredProjects" />
+    <ProjectsSection
+      :projects="homeData.featuredProjects"
+      :settings="homeData.settings"
+    />
 
     <SkillsSection
       :categories="homeData.skillCategories"
       :highlights="homeData.highlights.skills"
+      :settings="homeData.settings"
     />
 
-    <TimelineSection :experiences="homeData.experiences" />
+    <TimelineSection
+      :experiences="homeData.experiences"
+      :settings="homeData.settings"
+    />
 
     <ContactSection
       :profile="homeData.profile"

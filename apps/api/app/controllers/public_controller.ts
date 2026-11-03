@@ -148,6 +148,33 @@ export default class PublicController {
         footerText: settings?.footerText ?? null,
         ogImage: PublicMediaTransformer.transform(settings?.ogImage),
         contactFormEnabled: settings?.contactFormEnabled ?? true,
+        aboutLabel: settings?.aboutLabel ?? 'Tentang saya',
+        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, ',
+        aboutTitleAccent: settings?.aboutTitleAccent ?? 'lalu menguji.',
+        projectsLabel: settings?.projectsLabel ?? 'Karya pilihan',
+        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan ',
+        projectsTitleAccent: settings?.projectsTitleAccent ?? 'karya.',
+        projectsSubtitle:
+          settings?.projectsSubtitle ??
+          'Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.',
+        skillsLabel: settings?.skillsLabel ?? 'Keahlian',
+        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat ',
+        skillsTitleAccent: settings?.skillsTitleAccent ?? 'pendukung.',
+        skillsSubtitle:
+          settings?.skillsSubtitle ??
+          'Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.',
+        experiencesLabel: settings?.experiencesLabel ?? 'Perjalanan',
+        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, ',
+        experiencesTitleAccent: settings?.experiencesTitleAccent ?? 'lalu berikutnya.',
+        experiencesSubtitle:
+          settings?.experiencesSubtitle ??
+          'Jejak pendidikan, pengalaman kerja, dan proyek penting yang membentuk cara saya berpikir dan bekerja.',
+        contactLabel: settings?.contactLabel ?? 'Kontak',
+        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ',
+        contactTitleAccent: settings?.contactTitleAccent ?? 'ngobrol.',
+        contactSubtitle:
+          settings?.contactSubtitle ??
+          'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.',
       },
       profile: {
         fullName: profile?.fullName || '',

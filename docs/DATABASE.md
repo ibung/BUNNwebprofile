@@ -150,7 +150,7 @@ Constraint: `(kind = 'youtube') = (youtube_id IS NOT NULL)`, dan `kind <> 'youtu
 `<owner>_id FK CASCADE, media_id FK CASCADE, sort_order, PK (<owner>_id, media_id)`. Satu media boleh dipakai di banyak entitas. Cover proyek memakai `projects.cover_media_id`.
 
 ### site_settings (singleton)
-`id smallint PK default 1 CHECK (id = 1), site_title varchar(80), meta_description varchar(300), og_image_media_id FK media SET NULL, footer_text varchar(200) null, contact_form_enabled bool default true, updated_at`
+`id smallint PK default 1 CHECK (id = 1), site_title varchar(80), meta_description varchar(300), og_image_media_id FK media SET NULL, footer_text varchar(200) null, contact_form_enabled bool default true, about_label varchar(80), about_title_main varchar(120), about_title_accent varchar(120), projects_label varchar(80), projects_title_main varchar(120), projects_title_accent varchar(120), projects_subtitle text null, skills_label varchar(80), skills_title_main varchar(120), skills_title_accent varchar(120), skills_subtitle text null, experiences_label varchar(80), experiences_title_main varchar(120), experiences_title_accent varchar(120), experiences_subtitle text null, contact_label varchar(80), contact_title_main varchar(120), contact_title_accent varchar(120), contact_subtitle text null, updated_at`
 
 ### contact_messages
 `id, name varchar(120), email varchar(254), subject varchar(200) null, body text (maks 5000 karakter), status varchar(10) CHECK in MESSAGE_STATUSES default 'new', ip_hash char(64), user_agent varchar(300) null, created_at, read_at null`. Indeks `(status, created_at DESC)`. Alamat IP tidak disimpan mentah, hanya hash dengan garam dari env.

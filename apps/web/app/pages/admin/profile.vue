@@ -800,6 +800,10 @@ useSeoMeta({
 </template>
 
 <style scoped>
+.page-header {
+  margin-bottom: 24px;
+}
+
 .page-header h1 {
   font-size: 34px;
 }
@@ -809,7 +813,7 @@ useSeoMeta({
   border: 2px solid var(--ink);
   border-radius: 10px;
   font-weight: 700;
-  margin: 16px 0 24px;
+  margin: 0 0 24px;
 }
 
 .alert--success {
@@ -824,8 +828,8 @@ useSeoMeta({
 
 .admin-tab-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 

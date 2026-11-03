@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { PublicExperience } from '@bunn/shared'
+import type { PublicExperience, PublicSiteSettings } from '@bunn/shared'
 import MediaGallery from './MediaGallery.vue'
 
 defineProps<{
   experiences: PublicExperience[]
+  settings?: PublicSiteSettings
 }>()
 
 const getYearDisplay = (startedOn: string, endedOn: string | null) => {
@@ -18,8 +19,11 @@ const getYearDisplay = (startedOn: string, endedOn: string | null) => {
 
 <template>
   <section v-if="experiences && experiences.length > 0" id="jalan">
-    <span class="label">Perjalanan</span>
-    <h2>Satu langkah, <em>lalu berikutnya.</em></h2>
+    <span class="label">{{ settings?.experiencesLabel || 'Perjalanan' }}</span>
+    <h2>{{ settings?.experiencesTitleMain || 'Satu langkah, ' }}<em>{{ settings?.experiencesTitleAccent || 'lalu berikutnya.' }}</em></h2>
+    <p v-if="settings?.experiencesSubtitle" class="sub" style="margin-top: 8px; color: var(--muted); font-size: 16px;">
+      {{ settings.experiencesSubtitle }}
+    </p>
 
     <div class="timeline">
       <div

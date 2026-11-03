@@ -57,10 +57,10 @@ const handleSubmit = async () => {
 
 <template>
   <section id="kontak" class="contact on-red">
-    <span class="label">Kontak</span>
-    <h2>Ayo <em>ngobrol.</em></h2>
+    <span class="label">{{ settings.contactLabel || 'Kontak' }}</span>
+    <h2>{{ settings.contactTitleMain || 'Ayo ' }}<em>{{ settings.contactTitleAccent || 'ngobrol.' }}</em></h2>
     <p class="contact-lead">
-      Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.
+      {{ settings.contactSubtitle || 'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.' }}
     </p>
 
     <div class="contact-layout">

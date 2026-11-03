@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import type { PublicProfile, PublicProfileFact, PublicHighlight } from '@bunn/shared'
+import type { PublicProfile, PublicProfileFact, PublicHighlight, PublicSiteSettings } from '@bunn/shared'
 
 defineProps<{
   profile: PublicProfile
   facts: PublicProfileFact[]
   highlights?: PublicHighlight[]
+  settings?: PublicSiteSettings
 }>()
 </script>
 
 <template>
   <section id="tentang">
-    <span class="label">Tentang {{ profile.displayName || profile.fullName || 'saya' }}</span>
-    <h2>{{ profile.tagline || 'Membangun, lalu menguji.' }}</h2>
+    <span class="label">{{ settings?.aboutLabel || 'Tentang saya' }}</span>
+    <h2>{{ settings?.aboutTitleMain || 'Membangun, ' }}<em>{{ settings?.aboutTitleAccent || 'lalu menguji.' }}</em></h2>
 
     <div class="about-grid">
       <div class="about-text">

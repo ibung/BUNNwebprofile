@@ -108,6 +108,25 @@ export interface PublicSiteSettings {
   footerText: string | null
   ogImage: PublicMedia | null
   contactFormEnabled: boolean
+  aboutLabel?: string | null
+  aboutTitleMain?: string | null
+  aboutTitleAccent?: string | null
+  projectsLabel?: string | null
+  projectsTitleMain?: string | null
+  projectsTitleAccent?: string | null
+  projectsSubtitle?: string | null
+  skillsLabel?: string | null
+  skillsTitleMain?: string | null
+  skillsTitleAccent?: string | null
+  skillsSubtitle?: string | null
+  experiencesLabel?: string | null
+  experiencesTitleMain?: string | null
+  experiencesTitleAccent?: string | null
+  experiencesSubtitle?: string | null
+  contactLabel?: string | null
+  contactTitleMain?: string | null
+  contactTitleAccent?: string | null
+  contactSubtitle?: string | null
 }
 
 export interface PublicProfile {

@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import type { PublicProjectItem } from '@bunn/shared'
+import type { PublicProjectItem, PublicSiteSettings } from '@bunn/shared'
 import ProjectCard from './ProjectCard.vue'
 
 defineProps<{
   projects: PublicProjectItem[]
+  settings?: PublicSiteSettings
 }>()
 </script>
 
 <template>
   <section v-if="projects && projects.length > 0" id="proyek" style="background: #efe2ce">
-    <span class="label">Proyek</span>
-    <h2>Karya <em>pilihan.</em></h2>
-    <p class="sub">
-      Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.
+    <span class="label">{{ settings?.projectsLabel || 'Karya pilihan' }}</span>
+    <h2>{{ settings?.projectsTitleMain || 'Pilihan ' }}<em>{{ settings?.projectsTitleAccent || 'karya.' }}</em></h2>
+    <p v-if="settings?.projectsSubtitle" class="sub">
+      {{ settings.projectsSubtitle }}
     </p>
 
     <div class="projects-grid">

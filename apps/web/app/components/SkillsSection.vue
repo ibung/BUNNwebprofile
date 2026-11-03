@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import type { PublicSkillCategory, PublicHighlight } from '@bunn/shared'
+import type { PublicSkillCategory, PublicHighlight, PublicSiteSettings } from '@bunn/shared'
 
 defineProps<{
   categories: PublicSkillCategory[]
   highlights?: PublicHighlight[]
+  settings?: PublicSiteSettings
 }>()
 </script>
 
 <template>
   <section v-if="categories && categories.length > 0" id="keahlian" class="skills">
-    <span class="label">Keahlian</span>
-    <h2>Alat <em>pendukung.</em></h2>
-    <p class="sub">
-      Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.
+    <span class="label">{{ settings?.skillsLabel || 'Keahlian' }}</span>
+    <h2>{{ settings?.skillsTitleMain || 'Alat ' }}<em>{{ settings?.skillsTitleAccent || 'pendukung.' }}</em></h2>
+    <p v-if="settings?.skillsSubtitle" class="sub">
+      {{ settings.skillsSubtitle }}
     </p>
 
     <div class="skills-grid">
