@@ -287,3 +287,4 @@ docker run --rm -v bunn-portfolio_uploads:/data -v ~/backups/bunn-portfolio:/bac
    sudo ufw allow from 192.168.1.0/24 to any port 22
    sudo ufw enable
    ```
+

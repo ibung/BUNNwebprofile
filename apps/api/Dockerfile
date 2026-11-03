@@ -7,9 +7,6 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Dependensi sistem untuk kompilasi modul native bila dibutuhkan
-RUN apk add --no-cache python3 make g++ libc6-compat
-
 # Aktifkan pnpm via corepack
 RUN corepack enable
 
