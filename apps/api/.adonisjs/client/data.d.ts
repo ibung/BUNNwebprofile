@@ -5,6 +5,11 @@
 
 /// <reference path="./manifest.d.ts" />
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
+import type PublicMediaTransformer from '#transformers/public_media_transformer'
 
 export namespace Data {
+  export type PublicMedia = InferData<PublicMediaTransformer>
+  export namespace PublicMedia {
+    export type Variants = InferVariants<PublicMediaTransformer>
+  }
 }

@@ -23,6 +23,7 @@ const ProjectsController = () => import('#controllers/projects_controller')
 const ExperiencesController = () => import('#controllers/experiences_controller')
 const MessagesController = () => import('#controllers/messages_controller')
 const ContactController = () => import('#controllers/contact_controller')
+const PublicController = () => import('#controllers/public_controller')
 
 // ─── Health check — Docker & monitoring ──────────────────────────────────────
 router.get('/api/health', () => {
@@ -30,7 +31,16 @@ router.get('/api/health', () => {
 })
 
 // ─── Publik ──────────────────────────────────────────────────────────────────
-router.post('/api/public/contact', [ContactController, 'submit'])
+router
+  .group(() => {
+    router.get('home', [PublicController, 'home'])
+    router.get('projects', [PublicController, 'projects'])
+    router.get('projects/:slug', [PublicController, 'projectDetail'])
+    router.get('skills/:slug', [PublicController, 'skillDetail'])
+    router.get('sitemap', [PublicController, 'sitemap'])
+    router.post('contact', [ContactController, 'submit'])
+  })
+  .prefix('/api/public')
 
 // ─── Auth (publik) ───────────────────────────────────────────────────────────
 router

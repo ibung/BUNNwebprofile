@@ -34,8 +34,8 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-035 Endpoint `PATCH /reorder` untuk semua sumber daya berurutan
 
 ## Fase 4: API publik
-- [ ] T-040 `GET /api/public/home`, daftar dan detail proyek, detail skill, sitemap, dengan aturan visibilitas di `docs/DATABASE.md`
-- [ ] T-041 Sanitasi markdown di server (`...Html`)
+- [x] T-040 `GET /api/public/home`, daftar dan detail proyek, detail skill, sitemap, dengan aturan visibilitas di `docs/DATABASE.md`
+- [x] T-041 Sanitasi markdown di server (`...Html`)
 
 ## Fase 5: Situs publik (Nuxt)
 - [ ] T-050 Token CSS, font, layout dasar, gaya global dari `docs/DESIGN.md`

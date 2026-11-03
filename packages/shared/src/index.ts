@@ -100,3 +100,128 @@ export interface PublicMedia {
   mimeType: string | null
   durationSeconds: number | null
 }
+
+// Data situs publik
+export interface PublicSiteSettings {
+  siteTitle: string
+  metaDescription: string
+  footerText: string | null
+  ogImage: PublicMedia | null
+  contactFormEnabled: boolean
+}
+
+export interface PublicProfile {
+  fullName: string
+  displayName: string
+  headline: string
+  tagline: string | null
+  heroIntroHtml: string
+  aboutHtml: string
+  location: string | null
+  emailPublic: string | null
+  phonePublic: string | null
+  availabilityText: string | null
+  avatar: PublicMedia | null
+  resume: PublicMedia | null
+}
+
+export interface PublicProfileFact {
+  label: string
+  value: string
+}
+
+export interface PublicSocialLink {
+  platform: SocialPlatform
+  label: string
+  url: string
+}
+
+export interface PublicHighlight {
+  id: number
+  value: string
+  label: string
+  note: string | null
+}
+
+export interface PublicSkillItem {
+  id: number
+  name: string
+  slug: string
+  level: SkillLevel | null
+  summary: string
+  yearsExperience: number | null
+}
+
+export interface PublicSkillCategory {
+  slug: string
+  name: string
+  description: string | null
+  accent: CategoryAccent
+  skills: PublicSkillItem[]
+}
+
+export interface PublicExperience {
+  id: number
+  kind: ExperienceKind
+  title: string
+  organization: string | null
+  descriptionHtml: string | null
+  startedOn: string
+  endedOn: string | null
+  media: PublicMedia[]
+}
+
+export interface PublicProjectItem {
+  id: number
+  slug: string
+  title: string
+  summary: string
+  role: string | null
+  kind: string | null
+  isFeatured: boolean
+  demoUrl: string | null
+  repoUrl: string | null
+  startedOn: string | null
+  endedOn: string | null
+  publishedAt: string | null
+  cover: PublicMedia | null
+  skills: Array<{ id: number; name: string; slug: string }>
+}
+
+export interface PublicProjectDetail extends PublicProjectItem {
+  descriptionHtml: string
+  media: PublicMedia[]
+}
+
+export interface PublicSkillDetail {
+  id: number
+  slug: string
+  name: string
+  level: SkillLevel | null
+  summary: string
+  descriptionHtml: string | null
+  yearsExperience: number | null
+  category: { slug: string; name: string; accent: CategoryAccent }
+  media: PublicMedia[]
+  projects: PublicProjectItem[]
+}
+
+export interface PublicHomeData {
+  settings: PublicSiteSettings
+  profile: PublicProfile
+  facts: PublicProfileFact[]
+  socials: PublicSocialLink[]
+  highlights: {
+    about: PublicHighlight[]
+    skills: PublicHighlight[]
+  }
+  featuredProjects: PublicProjectItem[]
+  skillCategories: PublicSkillCategory[]
+  experiences: PublicExperience[]
+}
+
+export interface PublicSitemapData {
+  projects: Array<{ slug: string; updatedAt: string }>
+  skills: Array<{ slug: string; updatedAt: string }>
+}
+
