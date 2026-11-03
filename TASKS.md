@@ -60,8 +60,8 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 ## Fase 7: Deploy
 - [x] T-070 `apps/web/Dockerfile` dan `apps/api/Dockerfile` sesuai `docs/DEPLOYMENT.md`, plus `.dockerignore`
 - [x] T-071 Validasi `docker-compose.yml`, jalankan seluruh stack lokal dengan Compose
-- [ ] T-072 Deploy pertama di server, ganti rute tunnel ke `localhost:3000`, matikan Nginx lama (pemilik, dipandu)
-- [ ] T-073 Jadwalkan backup harian, salin ke HDD, uji restore satu kali (pemilik, dipandu)
+- [x] T-072 Deploy pertama di server, ganti rute tunnel ke `localhost:3000`, matikan Nginx lama (pemilik, dipandu)
+- [x] T-073 Jadwalkan backup harian, salin ke HDD, uji restore satu kali (pemilik, dipandu)
 
 ## Fase 8: Operasional
 - [ ] T-080 Cloudflare Access untuk `/admin*` dan `/api/admin*`
