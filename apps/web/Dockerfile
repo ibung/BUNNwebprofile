@@ -22,6 +22,9 @@ RUN pnpm install --frozen-lockfile --filter @bunn/web...
 COPY packages/shared/ ./packages/shared/
 COPY apps/web/ ./apps/web/
 
+# Kompilasi @bunn/shared ke JavaScript murni (dist/)
+RUN pnpm --filter @bunn/shared build
+
 # Kompilasi aplikasi Nuxt 4 ke standalone Nitro server
 RUN pnpm --filter @bunn/web build
 
@@ -46,4 +49,3 @@ USER bunn
 EXPOSE 3000
 
 CMD ["node", ".output/server/index.mjs"]
-

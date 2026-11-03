@@ -32,6 +32,6 @@ export default class SkillCategory extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  @hasMany(() => Skill)
+  @hasMany(() => Skill, { foreignKey: 'categoryId' })
   declare skills: HasMany<typeof Skill>
 }

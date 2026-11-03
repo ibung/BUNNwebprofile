@@ -25,6 +25,9 @@ RUN pnpm install --frozen-lockfile --filter @bunn/api...
 COPY packages/shared/ ./packages/shared/
 COPY apps/api/ ./apps/api/
 
+# Kompilasi @bunn/shared ke JavaScript murni (dist/)
+RUN pnpm --filter @bunn/shared build
+
 # Kompilasi TypeScript AdonisJS ke folder build/
 RUN pnpm --filter @bunn/api build
 
@@ -60,4 +63,3 @@ USER bunn
 EXPOSE 3333
 
 CMD ["node", "bin/server.js"]
-
