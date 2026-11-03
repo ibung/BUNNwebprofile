@@ -26,12 +26,12 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-023 Uji untuk parser YouTube dan validasi unggahan
 
 ## Fase 3: CRUD admin
-- [ ] T-030 Profil, fakta, tautan sosial, sorotan, pengaturan situs
-- [ ] T-031 Kategori skill dan skill (dengan `mediaIds`)
-- [ ] T-032 Proyek (dengan `skillIds`, `mediaIds`, `coverMediaId`, status dan aturan terbit)
-- [ ] T-033 Perjalanan (dengan `mediaIds`)
-- [ ] T-034 Pesan kontak (daftar, status, hapus) dan `POST /api/public/contact` (honeypot, batas laju)
-- [ ] T-035 Endpoint `PATCH /reorder` untuk semua sumber daya berurutan
+- [x] T-030 Profil, fakta, tautan sosial, sorotan, pengaturan situs
+- [x] T-031 Kategori skill dan skill (dengan `mediaIds`)
+- [x] T-032 Proyek (dengan `skillIds`, `mediaIds`, `coverMediaId`, status dan aturan terbit)
+- [x] T-033 Perjalanan (dengan `mediaIds`)
+- [x] T-034 Pesan kontak (daftar, status, hapus) dan `POST /api/public/contact` (honeypot, batas laju)
+- [x] T-035 Endpoint `PATCH /reorder` untuk semua sumber daya berurutan
 
 ## Fase 4: API publik
 - [ ] T-040 `GET /api/public/home`, daftar dan detail proyek, detail skill, sitemap, dengan aturan visibilitas di `docs/DATABASE.md`

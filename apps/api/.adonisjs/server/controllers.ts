@@ -5,5 +5,16 @@
 
 export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
+  Contact: () => import('#controllers/contact_controller'),
+  Experiences: () => import('#controllers/experiences_controller'),
+  Highlights: () => import('#controllers/highlights_controller'),
   Media: () => import('#controllers/media_controller'),
+  Messages: () => import('#controllers/messages_controller'),
+  Profile: () => import('#controllers/profile_controller'),
+  ProfileFacts: () => import('#controllers/profile_facts_controller'),
+  Projects: () => import('#controllers/projects_controller'),
+  SiteSettings: () => import('#controllers/site_settings_controller'),
+  SkillCategories: () => import('#controllers/skill_categories_controller'),
+  Skills: () => import('#controllers/skills_controller'),
+  SocialLinks: () => import('#controllers/social_links_controller'),
 }
