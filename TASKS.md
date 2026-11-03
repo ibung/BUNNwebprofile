@@ -38,15 +38,15 @@ Rujukan: `docs/PRD.md`, `docs/DATABASE.md`, `docs/API.md`, `docs/CMS.md`, `docs/
 - [x] T-041 Sanitasi markdown di server (`...Html`)
 
 ## Fase 5: Situs publik (Nuxt)
-- [ ] T-050 Token CSS, font, layout dasar, gaya global dari `docs/DESIGN.md`
-- [ ] T-051 Handler proxy `/api/**` dan `/uploads/**`, `usePublicApi()`, `runtimeConfig`
-- [ ] T-052 Hero, navigasi, bagian Tentang (data dari API)
-- [ ] T-053 Bagian Proyek, kartu proyek, halaman `/projects` dan `/projects/[slug]`
-- [ ] T-054 Bagian Keahlian, kartu skill, halaman `/skills/[slug]`
-- [ ] T-055 Perjalanan, Kontak (form), Footer
-- [ ] T-056 Komponen media: galeri dengan lightbox, pemutar YouTube (facade, nocookie), gambar responsif dari varian
-- [ ] T-057 SEO: meta per halaman, Open Graph, `sitemap.xml`, `robots.txt`, favicon, halaman 404
-- [ ] T-058 Cek responsif (360, 768, 1280 px), aksesibilitas, bandingkan dengan `docs/design-reference/index.html`
+- [x] T-050 Token CSS, font, layout dasar, gaya global dari `docs/DESIGN.md`
+- [x] T-051 Handler proxy `/api/**` dan `/uploads/**`, `usePublicApi()`, `runtimeConfig`
+- [x] T-052 Hero, navigasi, bagian Tentang (data dari API)
+- [x] T-053 Bagian Proyek, kartu proyek, halaman `/projects` dan `/projects/[slug]`
+- [x] T-054 Bagian Keahlian, kartu skill, halaman `/skills/[slug]`
+- [x] T-055 Perjalanan, Kontak (form), Footer
+- [x] T-056 Komponen media: galeri dengan lightbox, pemutar YouTube (facade, nocookie), gambar responsif dari varian
+- [x] T-057 SEO: meta per halaman, Open Graph, `sitemap.xml`, `robots.txt`, favicon, halaman 404
+- [x] T-058 Cek responsif (360, 768, 1280 px), aksesibilitas, bandingkan dengan `docs/design-reference/index.html`
 
 ## Fase 6: CMS (/admin)
 - [ ] T-060 Rute admin SPA, middleware, `useAdminApi()`, halaman login, layout panel

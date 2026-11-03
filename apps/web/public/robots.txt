@@ -1,2 +1,6 @@
 User-Agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /api/admin
+
+Sitemap: https://bunn.my.id/sitemap.xml

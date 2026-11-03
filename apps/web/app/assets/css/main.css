@@ -1,0 +1,337 @@
+/* ==========================================================================
+   BUNN Design System Tokens & Global Styles (docs/DESIGN.md)
+   ========================================================================== */
+
+:root {
+  --red: #DA3F1B;
+  --yellow: #F2B84B;
+  --cream: #F6EDE0;
+  --paper: #FCF4E4;
+  --ink: #2A1F1B;
+  --muted: #6B5D54;
+  --green: #6FA06B;
+
+  --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --pad: clamp(20px, 6vw, 92px);
+}
+
+/* Reset & Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Aksesibilitas: Outline fokus keyboard terlihat jelas */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Container pembungkus dengan padding dinamis */
+.wrap {
+  padding: 0 var(--pad);
+}
+
+/* Tipografi */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--serif);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+em {
+  font-style: italic;
+  color: var(--red);
+}
+
+.on-red em,
+.on-red .accent {
+  color: var(--yellow);
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: inline-block;
+}
+
+.on-red .label {
+  color: var(--yellow);
+}
+
+/* Section Dasar */
+section {
+  padding: 96px var(--pad);
+}
+
+section > h2 {
+  font-size: clamp(40px, 6vw, 76px);
+  margin: 10px 0 14px;
+}
+
+section > p.sub {
+  max-width: 36em;
+  color: var(--muted);
+  margin-bottom: 48px;
+}
+
+/* Kartu Neo-brutalist */
+.card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 7px 7px 0 var(--ink);
+  padding: 24px 26px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card.y {
+  background: var(--yellow);
+}
+
+.card h3 {
+  font-size: 26px;
+  margin: 6px 0 8px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.card.y p {
+  color: var(--ink);
+}
+
+/* Tombol Pil */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 13px 24px;
+  border: 2.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.btn.y {
+  background: var(--yellow);
+}
+
+.btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 4px 4px 0 var(--ink) !important;
+}
+
+/* Pil Tag */
+.pill {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 14px;
+  margin: 8px 8px 0 0;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+
+.pill:hover {
+  background: var(--yellow);
+}
+
+.card.y .pill {
+  background: var(--paper);
+}
+
+.card.y .pill:hover {
+  background: var(--cream);
+}
+
+/* Angka Sorotan Besar */
+.big {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--red);
+}
+
+.card.y .big {
+  color: var(--ink);
+}
+
+/* Gaya Markdown yang Diberikan Server (...Html) */
+.markdown-body {
+  max-width: 72ch;
+  line-height: 1.7;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin: 32px 0 16px;
+  color: var(--ink);
+}
+
+.markdown-body h1 {
+  font-size: 36px;
+}
+
+.markdown-body h2 {
+  font-size: 30px;
+}
+
+.markdown-body h3 {
+  font-size: 24px;
+}
+
+.markdown-body p {
+  margin-bottom: 20px;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 16px 0 24px 24px;
+}
+
+.markdown-body li {
+  margin-bottom: 8px;
+}
+
+.markdown-body blockquote {
+  border-left: 5px solid var(--red);
+  background: var(--paper);
+  padding: 16px 20px;
+  border-radius: 0 12px 12px 0;
+  margin: 24px 0;
+  font-style: italic;
+}
+
+.markdown-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--cream);
+  border: 1px solid var(--ink);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.markdown-body pre {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 18px;
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+.markdown-body pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.markdown-body a {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.markdown-body a:hover {
+  color: var(--ink);
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 2.5px solid var(--ink);
+  margin: 40px 0;
+}
+
+/* Responsif Global */
+@media (max-width: 860px) {
+  section {
+    padding: 64px var(--pad);
+  }
+}
+
+/* Hormati Mode Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .btn,
+  .card,
+  .pill {
+    transition: none !important;
+  }
+  .cursor {
+    animation: none !important;
+  }
+}
