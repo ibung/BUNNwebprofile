@@ -71,7 +71,11 @@ export default class PublicController {
     const now = DateTime.utc().toSQL()
 
     // 1. Site Settings (singleton id = 1)
-    const settings = await SiteSettings.query().where('id', 1).preload('ogImage').first()
+    const settings = await SiteSettings.query()
+      .where('id', 1)
+      .preload('ogImage')
+      .preload('favicon')
+      .first()
 
     // 2. Profile (singleton id = 1)
     const profile = await Profile.query().where('id', 1).preload('avatar').preload('resume').first()
@@ -147,6 +151,7 @@ export default class PublicController {
         metaDescription: settings?.metaDescription || '',
         footerText: settings?.footerText ?? null,
         ogImage: PublicMediaTransformer.transform(settings?.ogImage),
+        favicon: PublicMediaTransformer.transform(settings?.favicon),
         contactFormEnabled: settings?.contactFormEnabled ?? true,
         aboutLabel: settings?.aboutLabel ?? 'Tentang saya',
         aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, ',
@@ -450,5 +455,56 @@ export default class PublicController {
     }
 
     return response.ok({ data: sitemapData })
+  }
+
+  /**
+   * GET /api/public/settings
+   * Mengembalikan konfigurasi situs publik (metadata, favicon, footer, teks landing page).
+   */
+  async settings({ response }: HttpContext) {
+    response.header('Cache-Control', 'no-store')
+    const settings = await SiteSettings.query()
+      .where('id', 1)
+      .preload('ogImage')
+      .preload('favicon')
+      .first()
+
+    return response.ok({
+      data: {
+        siteTitle: settings?.siteTitle || 'Ibnu Hilmi Athaillah',
+        metaDescription: settings?.metaDescription || '',
+        footerText: settings?.footerText ?? null,
+        ogImage: PublicMediaTransformer.transform(settings?.ogImage),
+        favicon: PublicMediaTransformer.transform(settings?.favicon),
+        contactFormEnabled: settings?.contactFormEnabled ?? true,
+        aboutLabel: settings?.aboutLabel ?? 'Tentang saya',
+        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, ',
+        aboutTitleAccent: settings?.aboutTitleAccent ?? 'lalu menguji.',
+        projectsLabel: settings?.projectsLabel ?? 'Karya pilihan',
+        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan ',
+        projectsTitleAccent: settings?.projectsTitleAccent ?? 'karya.',
+        projectsSubtitle:
+          settings?.projectsSubtitle ??
+          'Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.',
+        skillsLabel: settings?.skillsLabel ?? 'Keahlian',
+        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat ',
+        skillsTitleAccent: settings?.skillsTitleAccent ?? 'pendukung.',
+        skillsSubtitle:
+          settings?.skillsSubtitle ??
+          'Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.',
+        experiencesLabel: settings?.experiencesLabel ?? 'Perjalanan',
+        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, ',
+        experiencesTitleAccent: settings?.experiencesTitleAccent ?? 'lalu berikutnya.',
+        experiencesSubtitle:
+          settings?.experiencesSubtitle ??
+          'Jejak pendidikan, pengalaman kerja, dan proyek penting yang membentuk cara saya berpikir dan bekerja.',
+        contactLabel: settings?.contactLabel ?? 'Kontak',
+        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ',
+        contactTitleAccent: settings?.contactTitleAccent ?? 'ngobrol.',
+        contactSubtitle:
+          settings?.contactSubtitle ??
+          'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.',
+      },
+    })
   }
 }

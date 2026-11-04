@@ -8,7 +8,11 @@ export default class SiteSettingsController {
    * GET /api/admin/settings
    */
   async show({ response }: HttpContext) {
-    let settings = await SiteSettings.query().where('id', 1).preload('ogImage').first()
+    let settings = await SiteSettings.query()
+      .where('id', 1)
+      .preload('ogImage')
+      .preload('favicon')
+      .first()
 
     if (!settings) {
       settings = await SiteSettings.create({
@@ -18,6 +22,7 @@ export default class SiteSettingsController {
         contactFormEnabled: true,
       })
       await settings.load('ogImage')
+      await settings.load('favicon')
     }
 
     return response.ok({ data: settings })
@@ -42,6 +47,19 @@ export default class SiteSettingsController {
       }
     }
 
+    if (payload.faviconMediaId) {
+      const media = await Media.find(payload.faviconMediaId)
+      if (!media) {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Media Favicon yang dipilih tidak ditemukan.',
+            details: [{ field: 'faviconMediaId', message: 'Media tidak ditemukan.' }],
+          },
+        })
+      }
+    }
+
     let settings = await SiteSettings.find(1)
     if (!settings) {
       settings = new SiteSettings()
@@ -52,6 +70,7 @@ export default class SiteSettingsController {
     await settings.save()
 
     await settings.load('ogImage')
+    await settings.load('favicon')
 
     return response.ok({ data: settings })
   }

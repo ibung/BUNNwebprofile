@@ -318,6 +318,10 @@ export function handleDevMock(event: H3Event): unknown {
     return { success: true, message: 'Pesan Anda telah berhasil dikirim! (Dev Mode)' }
   }
 
+  if (path.includes('/public/settings')) {
+    return { data: mockPublicHome.settings }
+  }
+
   // Admin Auth
   if (path.includes('/admin/auth/me')) {
     return { user: { id: 1, email: 'ibnupisces08@gmail.com' } }

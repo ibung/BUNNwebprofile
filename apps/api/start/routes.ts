@@ -34,6 +34,7 @@ router.get('/api/health', () => {
 router
   .group(() => {
     router.get('home', [PublicController, 'home'])
+    router.get('settings', [PublicController, 'settings'])
     router.get('projects', [PublicController, 'projects'])
     router.get('projects/:slug', [PublicController, 'projectDetail'])
     router.get('skills/:slug', [PublicController, 'skillDetail'])

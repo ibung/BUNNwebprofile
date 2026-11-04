@@ -38,9 +38,11 @@ export interface AdminSiteSettingsData {
   siteTitle: string
   metaDescription: string | null
   ogImageMediaId: number | null
+  faviconMediaId?: number | null
   footerText: string | null
   contactFormEnabled: boolean
   ogImage?: PublicMedia | null
+  favicon?: PublicMedia | null
 
   aboutLabel?: string | null
   aboutTitleMain?: string | null

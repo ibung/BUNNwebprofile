@@ -23,6 +23,7 @@ const settingsForm = ref<Partial<AdminSiteSettingsData>>({
   footerText: '',
   contactFormEnabled: true,
   ogImageMediaId: null,
+  faviconMediaId: null,
 
   aboutLabel: '',
   aboutTitleMain: '',
@@ -50,8 +51,10 @@ const settingsForm = ref<Partial<AdminSiteSettingsData>>({
 })
 
 const selectedOgImage = ref<PublicMedia | null>(null)
+const selectedFavicon = ref<PublicMedia | null>(null)
 const isSavingSettings = ref(false)
 const isOgPickerOpen = ref(false)
+const isFaviconPickerOpen = ref(false)
 
 // Password Form
 const passwordForm = ref({
@@ -71,6 +74,7 @@ const loadSettings = async () => {
       ...s,
     }
     selectedOgImage.value = s.ogImage || null
+    selectedFavicon.value = s.favicon || null
   } catch (err) {
     console.error('Gagal memuat pengaturan:', err)
   } finally {
@@ -93,6 +97,7 @@ const handleSaveSettings = async () => {
       footerText: settingsForm.value.footerText,
       contactFormEnabled: settingsForm.value.contactFormEnabled,
       ogImageMediaId: settingsForm.value.ogImageMediaId,
+      faviconMediaId: settingsForm.value.faviconMediaId,
 
       aboutLabel: settingsForm.value.aboutLabel,
       aboutTitleMain: settingsForm.value.aboutTitleMain,
@@ -139,6 +144,13 @@ const handleOgSelected = (media: PublicMedia | PublicMedia[]) => {
   if (!item) return
   selectedOgImage.value = item
   settingsForm.value.ogImageMediaId = item.id
+}
+
+const handleFaviconSelected = (media: PublicMedia | PublicMedia[]) => {
+  const item = Array.isArray(media) ? media[0] : media
+  if (!item) return
+  selectedFavicon.value = item
+  settingsForm.value.faviconMediaId = item.id
 }
 
 const handleChangePassword = async () => {
@@ -301,6 +313,55 @@ useSeoMeta({
                 "
               >
                 Hapus
+              </button>
+            </div>
+          </div>
+
+          <!-- Favicon / Ikon Tab Browser Picker -->
+          <div class="favicon-picker-box">
+            <label>Favicon / Ikon Tab Browser (Pengganti Logo Nuxt di Tab)</label>
+            <p class="picker-sub">
+              Unggah logo ikon Anda sendiri untuk menggantikan ikon default Nuxt di tab peramban (disarankan PNG, SVG, atau ICO rasio 1:1).
+            </p>
+
+            <div class="browser-tab-mock">
+              <div class="tab-preview">
+                <img
+                  v-if="selectedFavicon?.urls?.thumb || selectedFavicon?.urls?.original"
+                  :src="(selectedFavicon.urls.thumb || selectedFavicon.urls.original) ?? undefined"
+                  alt="Favicon Preview"
+                  class="tab-favicon"
+                >
+                <div v-else class="tab-favicon-fallback">
+                  <svg viewBox="0 0 24 24" class="tab-fallback-svg" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h20" />
+                  </svg>
+                </div>
+                <span class="tab-title">{{ settingsForm.siteTitle || 'Web Portofolio' }}</span>
+                <span class="tab-close" aria-hidden="true">×</span>
+              </div>
+            </div>
+
+            <div class="favicon-btn-row">
+              <button
+                type="button"
+                class="btn"
+                @click="isFaviconPickerOpen = true"
+              >
+                Pilih Favicon dari Pustaka
+              </button>
+              <button
+                v-if="settingsForm.faviconMediaId"
+                type="button"
+                class="btn text-btn"
+                @click="
+                  settingsForm.faviconMediaId = null;
+                  selectedFavicon = null;
+                "
+              >
+                Hapus Favicon (Gunakan Default)
               </button>
             </div>
           </div>
@@ -725,6 +786,14 @@ useSeoMeta({
       @close="isOgPickerOpen = false"
       @select="handleOgSelected"
     />
+
+    <!-- Favicon Media Picker Modal -->
+    <MediaPickerModal
+      :is-open="isFaviconPickerOpen"
+      allowed-kind="image"
+      @close="isFaviconPickerOpen = false"
+      @select="handleFaviconSelected"
+    />
   </div>
 </template>
 
@@ -964,6 +1033,89 @@ useSeoMeta({
 }
 
 .og-btn-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Favicon Picker & Browser Tab Mock */
+.favicon-picker-box {
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--cream);
+  border: 2px dashed var(--ink);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.picker-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: -4px;
+}
+
+.browser-tab-mock {
+  background: #2b2b2b;
+  padding: 12px 16px 0;
+  border-radius: 10px 10px 0 0;
+  border: 2px solid var(--ink);
+  max-width: 320px;
+}
+
+.tab-preview {
+  background: var(--paper);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 8px 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 240px;
+  border: 1.5px solid var(--ink);
+  border-bottom: none;
+}
+
+.tab-favicon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+
+.tab-favicon-fallback {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tab-fallback-svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--muted);
+}
+
+.tab-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.tab-close {
+  font-size: 16px;
+  color: var(--muted);
+  margin-left: 4px;
+}
+
+.favicon-btn-row {
   display: flex;
   gap: 12px;
   align-items: center;

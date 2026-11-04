@@ -19,6 +19,9 @@ export default class SiteSettings extends BaseModel {
   declare ogImageMediaId: number | null
 
   @column()
+  declare faviconMediaId: number | null
+
+  @column()
   declare footerText: string | null
 
   @column()
@@ -87,4 +90,7 @@ export default class SiteSettings extends BaseModel {
 
   @belongsTo(() => Media, { foreignKey: 'ogImageMediaId' })
   declare ogImage: BelongsTo<typeof Media>
+
+  @belongsTo(() => Media, { foreignKey: 'faviconMediaId' })
+  declare favicon: BelongsTo<typeof Media>
 }

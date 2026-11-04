@@ -3,6 +3,7 @@ import type {
   PublicHomeData,
   PublicProjectDetail,
   PublicProjectItem,
+  PublicSiteSettings,
   PublicSkillDetail,
 } from '@bunn/shared'
 
@@ -36,6 +37,12 @@ export function usePublicApi() {
   /** Mengambil seluruh data beranda */
   const getHome = async (): Promise<PublicHomeData> => {
     const res = await apiFetch<ApiSuccess<PublicHomeData>>('/api/public/home')
+    return res.data
+  }
+
+  /** Mengambil pengaturan situs publik (metadata, favicon, footer, dll) */
+  const getSettings = async (): Promise<PublicSiteSettings> => {
+    const res = await apiFetch<ApiSuccess<PublicSiteSettings>>('/api/public/settings')
     return res.data
   }
 
@@ -89,6 +96,7 @@ export function usePublicApi() {
   return {
     apiFetch,
     getHome,
+    getSettings,
     getProjects,
     getProject,
     getSkill,

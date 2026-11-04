@@ -107,6 +107,7 @@ export interface PublicSiteSettings {
   metaDescription: string
   footerText: string | null
   ogImage: PublicMedia | null
+  favicon?: PublicMedia | null
   contactFormEnabled: boolean
   aboutLabel?: string | null
   aboutTitleMain?: string | null
