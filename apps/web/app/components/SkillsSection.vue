@@ -11,7 +11,14 @@ defineProps<{
 <template>
   <section v-if="categories && categories.length > 0" id="keahlian" class="skills">
     <span class="label">{{ settings?.skillsLabel || 'Keahlian' }}</span>
-    <h2>{{ settings?.skillsTitleMain || 'Alat ' }}<em>{{ settings?.skillsTitleAccent || 'pendukung.' }}</em></h2>
+    <h2>
+      <SectionHeading
+        :main="settings?.skillsTitleMain"
+        :accent="settings?.skillsTitleAccent"
+        default-main="Alat pendukung."
+        default-accent="pendukung."
+      />
+    </h2>
     <p v-if="settings?.skillsSubtitle" class="sub">
       {{ settings.skillsSubtitle }}
     </p>

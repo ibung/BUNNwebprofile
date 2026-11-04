@@ -20,7 +20,14 @@ const getYearDisplay = (startedOn: string, endedOn: string | null) => {
 <template>
   <section v-if="experiences && experiences.length > 0" id="jalan">
     <span class="label">{{ settings?.experiencesLabel || 'Perjalanan' }}</span>
-    <h2>{{ settings?.experiencesTitleMain || 'Satu langkah, ' }}<em>{{ settings?.experiencesTitleAccent || 'lalu berikutnya.' }}</em></h2>
+    <h2>
+      <SectionHeading
+        :main="settings?.experiencesTitleMain"
+        :accent="settings?.experiencesTitleAccent"
+        default-main="Satu langkah, lalu berikutnya."
+        default-accent="lalu berikutnya."
+      />
+    </h2>
     <p v-if="settings?.experiencesSubtitle" class="sub" style="margin-top: 8px; color: var(--muted); font-size: 16px;">
       {{ settings.experiencesSubtitle }}
     </p>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { PublicMedia } from '@bunn/shared'
+import { isAccentMatching } from '~/utils/sectionTitle'
 import { useAdminApi } from '~/composables/useAdminApi'
 import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminSiteSettingsData } from '~/composables/useAdminApi'
@@ -86,7 +87,21 @@ onMounted(() => {
   loadSettings()
 })
 
+const hasAccentMismatch = computed(() => {
+  return (
+    !isAccentMatching(settingsForm.value.aboutTitleMain, settingsForm.value.aboutTitleAccent) ||
+    !isAccentMatching(settingsForm.value.projectsTitleMain, settingsForm.value.projectsTitleAccent) ||
+    !isAccentMatching(settingsForm.value.skillsTitleMain, settingsForm.value.skillsTitleAccent) ||
+    !isAccentMatching(settingsForm.value.experiencesTitleMain, settingsForm.value.experiencesTitleAccent) ||
+    !isAccentMatching(settingsForm.value.contactTitleMain, settingsForm.value.contactTitleAccent)
+  )
+})
+
 const handleSaveSettings = async () => {
+  if (activeTab.value === 'sections' && hasAccentMismatch.value) {
+    toast.error('Periksa kembali teks aksen: teks harus sama persis dengan yang ada di Judul Lengkap.')
+    return
+  }
   isSavingSettings.value = true
 
   try {
@@ -400,23 +415,30 @@ useSeoMeta({
 
                 <div class="form-grid-2">
                   <div class="form-group">
-                    <label for="aboutTitleMain">Judul Teks Biasa</label>
+                    <label for="aboutTitleMain">Judul Lengkap (Teks Utama)</label>
                     <input
                       id="aboutTitleMain"
                       v-model="settingsForm.aboutTitleMain"
                       type="text"
-                      placeholder="Contoh: Membangun, "
+                      placeholder="Contoh: Membangun, lalu menguji."
                     >
                   </div>
 
                   <div class="form-group">
-                    <label for="aboutTitleAccent">Judul Aksen Italic Oranye</label>
+                    <label for="aboutTitleAccent">Kata/Teks Aksen Italic Oranye</label>
                     <input
                       id="aboutTitleAccent"
                       v-model="settingsForm.aboutTitleAccent"
                       type="text"
+                      :class="{ 'input-warning': !isAccentMatching(settingsForm.aboutTitleMain, settingsForm.aboutTitleAccent) }"
                       placeholder="Contoh: lalu menguji."
                     >
+                    <span
+                      v-if="!isAccentMatching(settingsForm.aboutTitleMain, settingsForm.aboutTitleAccent)"
+                      class="field-warning-msg"
+                    >
+                      ⚠️ Teks aksen tidak cocok dengan teks di Judul Lengkap.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -426,8 +448,13 @@ useSeoMeta({
                   <span class="preview-tag">Pratinjau Tampilan:</span>
                   <span class="preview-label">{{ settingsForm.aboutLabel || 'TENTANG SAYA' }}</span>
                   <h2 class="preview-heading">
-                    {{ settingsForm.aboutTitleMain || 'Membangun, ' }}
-                    <em class="preview-accent">{{ settingsForm.aboutTitleAccent || 'lalu menguji.' }}</em>
+                    <SectionHeading
+                      :main="settingsForm.aboutTitleMain"
+                      :accent="settingsForm.aboutTitleAccent"
+                      default-main="Membangun, lalu menguji."
+                      default-accent="lalu menguji."
+                      accent-class="preview-accent"
+                    />
                   </h2>
                 </div>
               </div>
@@ -455,23 +482,30 @@ useSeoMeta({
 
                 <div class="form-grid-2">
                   <div class="form-group">
-                    <label for="projectsTitleMain">Judul Teks Biasa</label>
+                    <label for="projectsTitleMain">Judul Lengkap (Teks Utama)</label>
                     <input
                       id="projectsTitleMain"
                       v-model="settingsForm.projectsTitleMain"
                       type="text"
-                      placeholder="Contoh: Pilihan "
+                      placeholder="Contoh: Pilihan karya."
                     >
                   </div>
 
                   <div class="form-group">
-                    <label for="projectsTitleAccent">Judul Aksen Italic Oranye</label>
+                    <label for="projectsTitleAccent">Kata/Teks Aksen Italic Oranye</label>
                     <input
                       id="projectsTitleAccent"
                       v-model="settingsForm.projectsTitleAccent"
                       type="text"
+                      :class="{ 'input-warning': !isAccentMatching(settingsForm.projectsTitleMain, settingsForm.projectsTitleAccent) }"
                       placeholder="Contoh: karya."
                     >
+                    <span
+                      v-if="!isAccentMatching(settingsForm.projectsTitleMain, settingsForm.projectsTitleAccent)"
+                      class="field-warning-msg"
+                    >
+                      ⚠️ Teks aksen tidak cocok dengan teks di Judul Lengkap.
+                    </span>
                   </div>
                 </div>
 
@@ -491,8 +525,13 @@ useSeoMeta({
                   <span class="preview-tag">Pratinjau Tampilan:</span>
                   <span class="preview-label">{{ settingsForm.projectsLabel || 'KARYA PILIHAN' }}</span>
                   <h2 class="preview-heading">
-                    {{ settingsForm.projectsTitleMain || 'Pilihan ' }}
-                    <em class="preview-accent">{{ settingsForm.projectsTitleAccent || 'karya.' }}</em>
+                    <SectionHeading
+                      :main="settingsForm.projectsTitleMain"
+                      :accent="settingsForm.projectsTitleAccent"
+                      default-main="Pilihan karya."
+                      default-accent="karya."
+                      accent-class="preview-accent"
+                    />
                   </h2>
                   <p class="preview-subtitle">
                     {{ settingsForm.projectsSubtitle || 'Beberapa proyek yang saya rancang, kembangkan, dan uji kualitasnya.' }}
@@ -523,23 +562,30 @@ useSeoMeta({
 
                 <div class="form-grid-2">
                   <div class="form-group">
-                    <label for="skillsTitleMain">Judul Teks Biasa</label>
+                    <label for="skillsTitleMain">Judul Lengkap (Teks Utama)</label>
                     <input
                       id="skillsTitleMain"
                       v-model="settingsForm.skillsTitleMain"
                       type="text"
-                      placeholder="Contoh: Alat dan "
+                      placeholder="Contoh: Alat pendukung."
                     >
                   </div>
 
                   <div class="form-group">
-                    <label for="skillsTitleAccent">Judul Aksen Italic Oranye</label>
+                    <label for="skillsTitleAccent">Kata/Teks Aksen Italic Oranye</label>
                     <input
                       id="skillsTitleAccent"
                       v-model="settingsForm.skillsTitleAccent"
                       type="text"
-                      placeholder="Contoh: teknologi."
+                      :class="{ 'input-warning': !isAccentMatching(settingsForm.skillsTitleMain, settingsForm.skillsTitleAccent) }"
+                      placeholder="Contoh: pendukung."
                     >
+                    <span
+                      v-if="!isAccentMatching(settingsForm.skillsTitleMain, settingsForm.skillsTitleAccent)"
+                      class="field-warning-msg"
+                    >
+                      ⚠️ Teks aksen tidak cocok dengan teks di Judul Lengkap.
+                    </span>
                   </div>
                 </div>
 
@@ -559,8 +605,13 @@ useSeoMeta({
                   <span class="preview-tag">Pratinjau Tampilan:</span>
                   <span class="preview-label">{{ settingsForm.skillsLabel || 'KEAHLIAN' }}</span>
                   <h2 class="preview-heading">
-                    {{ settingsForm.skillsTitleMain || 'Alat dan ' }}
-                    <em class="preview-accent">{{ settingsForm.skillsTitleAccent || 'teknologi.' }}</em>
+                    <SectionHeading
+                      :main="settingsForm.skillsTitleMain"
+                      :accent="settingsForm.skillsTitleAccent"
+                      default-main="Alat pendukung."
+                      default-accent="pendukung."
+                      accent-class="preview-accent"
+                    />
                   </h2>
                   <p class="preview-subtitle">
                     {{ settingsForm.skillsSubtitle || 'Teknologi, framework, dan perkakas yang saya gunakan untuk membangun antarmuka web dan otomatisasi pengujian.' }}
@@ -591,23 +642,30 @@ useSeoMeta({
 
                 <div class="form-grid-2">
                   <div class="form-group">
-                    <label for="experiencesTitleMain">Judul Teks Biasa</label>
+                    <label for="experiencesTitleMain">Judul Lengkap (Teks Utama)</label>
                     <input
                       id="experiencesTitleMain"
                       v-model="settingsForm.experiencesTitleMain"
                       type="text"
-                      placeholder="Contoh: Satu langkah, "
+                      placeholder="Contoh: Satu langkah, lalu berikutnya."
                     >
                   </div>
 
                   <div class="form-group">
-                    <label for="experiencesTitleAccent">Judul Aksen Italic Oranye</label>
+                    <label for="experiencesTitleAccent">Kata/Teks Aksen Italic Oranye</label>
                     <input
                       id="experiencesTitleAccent"
                       v-model="settingsForm.experiencesTitleAccent"
                       type="text"
+                      :class="{ 'input-warning': !isAccentMatching(settingsForm.experiencesTitleMain, settingsForm.experiencesTitleAccent) }"
                       placeholder="Contoh: lalu berikutnya."
                     >
+                    <span
+                      v-if="!isAccentMatching(settingsForm.experiencesTitleMain, settingsForm.experiencesTitleAccent)"
+                      class="field-warning-msg"
+                    >
+                      ⚠️ Teks aksen tidak cocok dengan teks di Judul Lengkap.
+                    </span>
                   </div>
                 </div>
 
@@ -627,8 +685,13 @@ useSeoMeta({
                   <span class="preview-tag">Pratinjau Tampilan:</span>
                   <span class="preview-label">{{ settingsForm.experiencesLabel || 'PERJALANAN' }}</span>
                   <h2 class="preview-heading">
-                    {{ settingsForm.experiencesTitleMain || 'Satu langkah, ' }}
-                    <em class="preview-accent">{{ settingsForm.experiencesTitleAccent || 'lalu berikutnya.' }}</em>
+                    <SectionHeading
+                      :main="settingsForm.experiencesTitleMain"
+                      :accent="settingsForm.experiencesTitleAccent"
+                      default-main="Satu langkah, lalu berikutnya."
+                      default-accent="lalu berikutnya."
+                      accent-class="preview-accent"
+                    />
                   </h2>
                   <p class="preview-subtitle">
                     {{ settingsForm.experiencesSubtitle || 'Catatan pengalaman kerja, proyek freelance, dan pendidikan yang membentuk pemahaman teknis saya.' }}
@@ -659,23 +722,30 @@ useSeoMeta({
 
                 <div class="form-grid-2">
                   <div class="form-group">
-                    <label for="contactTitleMain">Judul Teks Biasa</label>
+                    <label for="contactTitleMain">Judul Lengkap (Teks Utama)</label>
                     <input
                       id="contactTitleMain"
                       v-model="settingsForm.contactTitleMain"
                       type="text"
-                      placeholder="Contoh: Ayo "
+                      placeholder="Contoh: Ayo ngobrol."
                     >
                   </div>
 
                   <div class="form-group">
-                    <label for="contactTitleAccent">Judul Aksen Italic Oranye/Kuning</label>
+                    <label for="contactTitleAccent">Kata/Teks Aksen Italic Oranye/Kuning</label>
                     <input
                       id="contactTitleAccent"
                       v-model="settingsForm.contactTitleAccent"
                       type="text"
+                      :class="{ 'input-warning': !isAccentMatching(settingsForm.contactTitleMain, settingsForm.contactTitleAccent) }"
                       placeholder="Contoh: ngobrol."
                     >
+                    <span
+                      v-if="!isAccentMatching(settingsForm.contactTitleMain, settingsForm.contactTitleAccent)"
+                      class="field-warning-msg field-warning-msg--light"
+                    >
+                      ⚠️ Teks aksen tidak cocok dengan teks di Judul Lengkap.
+                    </span>
                   </div>
                 </div>
 
@@ -695,8 +765,13 @@ useSeoMeta({
                   <span class="preview-tag">Pratinjau Tampilan (Latar Terracotta):</span>
                   <span class="preview-label preview-label--light">{{ settingsForm.contactLabel || 'KONTAK' }}</span>
                   <h2 class="preview-heading preview-heading--light">
-                    {{ settingsForm.contactTitleMain || 'Ayo ' }}
-                    <em class="preview-accent preview-accent--gold">{{ settingsForm.contactTitleAccent || 'ngobrol.' }}</em>
+                    <SectionHeading
+                      :main="settingsForm.contactTitleMain"
+                      :accent="settingsForm.contactTitleAccent"
+                      default-main="Ayo ngobrol."
+                      default-accent="ngobrol."
+                      accent-class="preview-accent preview-accent--gold"
+                    />
                   </h2>
                   <p class="preview-subtitle preview-subtitle--light">
                     {{ settingsForm.contactSubtitle || 'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.' }}
@@ -1232,5 +1307,22 @@ useSeoMeta({
   .form-grid-3 {
     grid-template-columns: 1fr;
   }
+}
+
+.input-warning {
+  border-color: var(--red, #DA3F1B) !important;
+  background-color: #fff4f2 !important;
+}
+
+.field-warning-msg {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red, #DA3F1B);
+  margin-top: 4px;
+}
+
+.field-warning-msg--light {
+  color: var(--yellow, #F2B84B);
 }
 </style>

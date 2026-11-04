@@ -11,7 +11,14 @@ defineProps<{
 <template>
   <section v-if="projects && projects.length > 0" id="proyek" style="background: #efe2ce">
     <span class="label">{{ settings?.projectsLabel || 'Karya pilihan' }}</span>
-    <h2>{{ settings?.projectsTitleMain || 'Pilihan ' }}<em>{{ settings?.projectsTitleAccent || 'karya.' }}</em></h2>
+    <h2>
+      <SectionHeading
+        :main="settings?.projectsTitleMain"
+        :accent="settings?.projectsTitleAccent"
+        default-main="Pilihan karya."
+        default-accent="karya."
+      />
+    </h2>
     <p v-if="settings?.projectsSubtitle" class="sub">
       {{ settings.projectsSubtitle }}
     </p>

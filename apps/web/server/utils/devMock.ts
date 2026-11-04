@@ -72,6 +72,29 @@ const mockPublicHome: PublicHomeData = {
     footerText: '© 2026 Ibnu Hilmi Athaillah. Dibuat dengan Nuxt 4 & AdonisJS 7.',
     ogImage: heroMedia,
     contactFormEnabled: true,
+    aboutLabel: 'Tentang saya',
+    aboutTitleMain: 'Membangun, lalu menguji.',
+    aboutTitleAccent: 'lalu menguji.',
+    projectsLabel: 'Karya pilihan',
+    projectsTitleMain: 'Pilihan karya.',
+    projectsTitleAccent: 'karya.',
+    projectsSubtitle:
+      'Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.',
+    skillsLabel: 'Keahlian',
+    skillsTitleMain: 'Alat pendukung.',
+    skillsTitleAccent: 'pendukung.',
+    skillsSubtitle:
+      'Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.',
+    experiencesLabel: 'Perjalanan',
+    experiencesTitleMain: 'Satu langkah, lalu berikutnya.',
+    experiencesTitleAccent: 'lalu berikutnya.',
+    experiencesSubtitle:
+      'Jejak pendidikan, pengalaman kerja, dan proyek penting yang membentuk cara saya berpikir dan bekerja.',
+    contactLabel: 'Kontak',
+    contactTitleMain: 'Ayo ngobrol.',
+    contactTitleAccent: 'ngobrol.',
+    contactSubtitle:
+      'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.',
   },
   profile: {
     fullName: 'Ibnu Hilmi Athaillah',

@@ -12,7 +12,14 @@ defineProps<{
 <template>
   <section id="tentang">
     <span class="label">{{ settings?.aboutLabel || 'Tentang saya' }}</span>
-    <h2>{{ settings?.aboutTitleMain || 'Membangun, ' }}<em>{{ settings?.aboutTitleAccent || 'lalu menguji.' }}</em></h2>
+    <h2>
+      <SectionHeading
+        :main="settings?.aboutTitleMain"
+        :accent="settings?.aboutTitleAccent"
+        default-main="Membangun, lalu menguji."
+        default-accent="lalu menguji."
+      />
+    </h2>
 
     <div class="about-grid">
       <div class="about-text">

@@ -154,28 +154,28 @@ export default class PublicController {
         favicon: PublicMediaTransformer.transform(settings?.favicon),
         contactFormEnabled: settings?.contactFormEnabled ?? true,
         aboutLabel: settings?.aboutLabel ?? 'Tentang saya',
-        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, ',
+        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, lalu menguji.',
         aboutTitleAccent: settings?.aboutTitleAccent ?? 'lalu menguji.',
         projectsLabel: settings?.projectsLabel ?? 'Karya pilihan',
-        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan ',
+        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan karya.',
         projectsTitleAccent: settings?.projectsTitleAccent ?? 'karya.',
         projectsSubtitle:
           settings?.projectsSubtitle ??
           'Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.',
         skillsLabel: settings?.skillsLabel ?? 'Keahlian',
-        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat ',
+        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat pendukung.',
         skillsTitleAccent: settings?.skillsTitleAccent ?? 'pendukung.',
         skillsSubtitle:
           settings?.skillsSubtitle ??
           'Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.',
         experiencesLabel: settings?.experiencesLabel ?? 'Perjalanan',
-        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, ',
+        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, lalu berikutnya.',
         experiencesTitleAccent: settings?.experiencesTitleAccent ?? 'lalu berikutnya.',
         experiencesSubtitle:
           settings?.experiencesSubtitle ??
           'Jejak pendidikan, pengalaman kerja, dan proyek penting yang membentuk cara saya berpikir dan bekerja.',
         contactLabel: settings?.contactLabel ?? 'Kontak',
-        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ',
+        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ngobrol.',
         contactTitleAccent: settings?.contactTitleAccent ?? 'ngobrol.',
         contactSubtitle:
           settings?.contactSubtitle ??
@@ -478,28 +478,28 @@ export default class PublicController {
         favicon: PublicMediaTransformer.transform(settings?.favicon),
         contactFormEnabled: settings?.contactFormEnabled ?? true,
         aboutLabel: settings?.aboutLabel ?? 'Tentang saya',
-        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, ',
+        aboutTitleMain: settings?.aboutTitleMain ?? 'Membangun, lalu menguji.',
         aboutTitleAccent: settings?.aboutTitleAccent ?? 'lalu menguji.',
         projectsLabel: settings?.projectsLabel ?? 'Karya pilihan',
-        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan ',
+        projectsTitleMain: settings?.projectsTitleMain ?? 'Pilihan karya.',
         projectsTitleAccent: settings?.projectsTitleAccent ?? 'karya.',
         projectsSubtitle:
           settings?.projectsSubtitle ??
           'Pilihan karya dan aplikasi yang pernah saya rancang, bangun, dan uji.',
         skillsLabel: settings?.skillsLabel ?? 'Keahlian',
-        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat ',
+        skillsTitleMain: settings?.skillsTitleMain ?? 'Alat pendukung.',
         skillsTitleAccent: settings?.skillsTitleAccent ?? 'pendukung.',
         skillsSubtitle:
           settings?.skillsSubtitle ??
           'Teknologi, pustaka, dan perangkat yang biasa saya gunakan dalam proses pengembangan dan pengujian.',
         experiencesLabel: settings?.experiencesLabel ?? 'Perjalanan',
-        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, ',
+        experiencesTitleMain: settings?.experiencesTitleMain ?? 'Satu langkah, lalu berikutnya.',
         experiencesTitleAccent: settings?.experiencesTitleAccent ?? 'lalu berikutnya.',
         experiencesSubtitle:
           settings?.experiencesSubtitle ??
           'Jejak pendidikan, pengalaman kerja, dan proyek penting yang membentuk cara saya berpikir dan bekerja.',
         contactLabel: settings?.contactLabel ?? 'Kontak',
-        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ',
+        contactTitleMain: settings?.contactTitleMain ?? 'Ayo ngobrol.',
         contactTitleAccent: settings?.contactTitleAccent ?? 'ngobrol.',
         contactSubtitle:
           settings?.contactSubtitle ??
