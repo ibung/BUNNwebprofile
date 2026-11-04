@@ -143,26 +143,41 @@ export default class MediaController {
         continue
       }
 
-      const buffer = await fs.readFile(file.tmpPath)
-      const processed = await MediaService.processAndStore(buffer, file.clientName ?? 'unknown')
+      try {
+        const buffer = await fs.readFile(file.tmpPath)
+        const processed = await MediaService.processAndStore(buffer, file.clientName ?? 'unknown')
 
-      const sniffed = MediaService.sniffType(buffer)!
-      const media = await Media.create({
-        kind: sniffed.kind,
-        title: null,
-        altText: null,
-        caption: null,
-        storageKey: processed.storageKey,
-        originalName: processed.originalName,
-        mimeType: processed.mimeType,
-        sizeBytes: processed.sizeBytes,
-        width: processed.width,
-        height: processed.height,
-        variants: processed.variants,
-        checksumSha256: processed.checksumSha256,
-      })
+        const sniffed = MediaService.sniffType(buffer)!
+        const media = await Media.create({
+          kind: sniffed.kind,
+          title: null,
+          altText: null,
+          caption: null,
+          storageKey: processed.storageKey,
+          originalName: processed.originalName,
+          mimeType: processed.mimeType,
+          sizeBytes: processed.sizeBytes,
+          width: processed.width,
+          height: processed.height,
+          variants: processed.variants,
+          checksumSha256: processed.checksumSha256,
+        })
 
-      createdRecords.push(media)
+        createdRecords.push(media)
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : `Format berkas "${file.clientName}" tidak didukung atau terjadi kendala pemrosesan.`
+
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message,
+            details: [{ field: 'file', message }],
+          },
+        })
+      }
     }
 
     const transformed = PublicMediaTransformer.transformMany(createdRecords)

@@ -101,8 +101,24 @@ const handleFileUpload = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (!target.files || target.files.length === 0) return
 
-  isUploading.value = true
   uploadError.value = null
+
+  const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'ico', 'svg', 'mp4', 'webm', 'pdf']
+  for (const file of Array.from(target.files)) {
+    const ext = file.name.split('.').pop()?.toLowerCase() || ''
+    if (!allowedExtensions.includes(ext)) {
+      uploadError.value = `Format berkas "${file.name}" (.${ext}) tidak didukung. Format yang diizinkan: PNG, JPG/JPEG, WebP, AVIF, ICO, SVG, MP4, WebM, PDF.`
+      if (fileInputRef.value) fileInputRef.value.value = ''
+      return
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      uploadError.value = `Ukuran berkas "${file.name}" melebihi batas maksimal (maks 50 MB).`
+      if (fileInputRef.value) fileInputRef.value.value = ''
+      return
+    }
+  }
+
+  isUploading.value = true
 
   const formData = new FormData()
   for (const file of Array.from(target.files)) {
@@ -117,9 +133,9 @@ const handleFileUpload = async (event: Event) => {
       toggleSelect(res[0])
     }
   } catch (err: unknown) {
-    const errorObj = err as { data?: { error?: { message?: string } } }
+    const errorObj = err as { data?: { error?: { message?: string } }; message?: string }
     uploadError.value =
-      errorObj.data?.error?.message || 'Gagal mengunggah berkas.'
+      errorObj.data?.error?.message || errorObj.message || 'Gagal mengunggah berkas. Format mungkin tidak didukung.'
   } finally {
     isUploading.value = false
     if (fileInputRef.value) fileInputRef.value.value = ''
@@ -296,19 +312,23 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
               ref="fileInputRef"
               type="file"
               multiple
-              accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,application/pdf"
+              accept="image/jpeg,image/png,image/webp,image/avif,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,.ico,.svg,video/mp4,video/webm,application/pdf"
               :disabled="isUploading"
               @change="handleFileUpload"
             >
             <p>Pilih berkas dari perangkat Anda</p>
-            <small>Gambar (maks 10 MB), Video (maks 50 MB), PDF (maks 10 MB)</small>
+            <div class="upload-guide">
+              <span class="guide-item"><strong>Gambar (maks 10 MB):</strong> PNG, JPG, WebP, AVIF, ICO, SVG</span>
+              <span class="guide-item"><strong>Video (maks 50 MB):</strong> MP4, WebM</span>
+              <span class="guide-item"><strong>Dokumen (maks 10 MB):</strong> PDF</span>
+            </div>
           </div>
 
           <div v-if="isUploading" class="status-box">
-            Mengunggah dan memproses berkas (membuat varian WebP)...
+            Mengunggah dan memproses berkas...
           </div>
 
-          <div v-if="uploadError" class="alert-error">
+          <div v-if="uploadError" class="alert-error" role="alert">
             {{ uploadError }}
           </div>
         </div>
@@ -580,6 +600,23 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 .drop-zone input {
   font-size: 14px;
   font-weight: 700;
+}
+
+.upload-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  background: var(--paper);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  text-align: left;
+}
+
+.guide-item {
+  font-size: 12px;
+  color: var(--ink);
 }
 
 .yt-form {

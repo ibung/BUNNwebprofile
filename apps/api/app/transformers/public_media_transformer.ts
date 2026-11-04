@@ -27,6 +27,12 @@ export default class PublicMediaTransformer {
           urls.lg = `/uploads/${media.variants.lg}`
         }
       }
+      if (!urls.thumb && urls.original) {
+        urls.thumb = urls.original
+      }
+      if (!urls.md && urls.original) {
+        urls.md = urls.original
+      }
     } else if (media.kind === 'video' || media.kind === 'document') {
       if (media.storageKey) {
         urls.original = `/uploads/${media.storageKey}`

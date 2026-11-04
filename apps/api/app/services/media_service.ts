@@ -102,6 +102,31 @@ export class MediaService {
       return { mime: 'application/pdf', kind: 'document', ext: 'pdf' }
     }
 
+    // 8. ICO: 00 00 01 00 (Reserved 0, Type 1) dan count >= 1
+    if (
+      buffer.length >= 6 &&
+      buffer[0] === 0x00 &&
+      buffer[1] === 0x00 &&
+      buffer[2] === 0x01 &&
+      buffer[3] === 0x00 &&
+      (buffer[4] > 0 || buffer[5] > 0)
+    ) {
+      return { mime: 'image/x-icon', kind: 'image', ext: 'ico' }
+    }
+
+    // 9. SVG: XML / <svg tag
+    const head = buffer
+      .subarray(0, Math.min(buffer.length, 512))
+      .toString('utf8')
+      .trim()
+      .toLowerCase()
+    if (head.startsWith('<svg') || (head.startsWith('<?xml') && head.includes('<svg'))) {
+      if (head.includes('<script') || head.includes('javascript:')) {
+        throw new Error('Berkas SVG mengandung skrip yang tidak diizinkan demi keamanan.')
+      }
+      return { mime: 'image/svg+xml', kind: 'image', ext: 'svg' }
+    }
+
     return null
   }
 
@@ -136,7 +161,7 @@ export class MediaService {
     const sniffed = this.sniffType(buffer)
     if (!sniffed) {
       throw new Error(
-        'Format berkas tidak diizinkan atau tidak dikenali. Format yang didukung: JPEG, PNG, WebP, AVIF, MP4, WebM, PDF.'
+        'Format berkas tidak diizinkan atau tidak dikenali. Format yang didukung: JPEG, PNG, WebP, AVIF, ICO, SVG, MP4, WebM, PDF.'
       )
     }
 
@@ -156,8 +181,8 @@ export class MediaService {
     const baseKey = `${fileId}.${sniffed.ext}`
     const destPath = path.join(uploadsDir, baseKey)
 
-    if (sniffed.kind === 'image') {
-      // Proses gambar dengan sharp
+    if (sniffed.kind === 'image' && sniffed.ext !== 'ico' && sniffed.ext !== 'svg') {
+      // Proses gambar raster (JPEG, PNG, WebP, AVIF) dengan sharp
       const imageInstance = sharp(buffer).rotate() // rotate() tanpa parameter otomatis menerapkan orientasi EXIF & menghapus EXIF tag
       const metadata = await imageInstance.metadata()
 
@@ -182,7 +207,7 @@ export class MediaService {
         variants[variantKey] = variantFileName
       }
     } else {
-      // Video atau Dokumen: tulis langsung ke disk
+      // Video, Dokumen, ICO, atau SVG: tulis langsung ke disk
       await fs.writeFile(destPath, buffer)
     }
 

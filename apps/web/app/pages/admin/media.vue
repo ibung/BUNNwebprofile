@@ -66,8 +66,24 @@ const handleFileUpload = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (!target.files || target.files.length === 0) return
 
-  isUploading.value = true
   uploadError.value = null
+
+  const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'ico', 'svg', 'mp4', 'webm', 'pdf']
+  for (const file of Array.from(target.files)) {
+    const ext = file.name.split('.').pop()?.toLowerCase() || ''
+    if (!allowedExtensions.includes(ext)) {
+      uploadError.value = `Format berkas "${file.name}" (.${ext}) tidak didukung. Format yang diizinkan: PNG, JPG/JPEG, WebP, AVIF, ICO, SVG, MP4, WebM, PDF.`
+      if (fileInputRef.value) fileInputRef.value.value = ''
+      return
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      uploadError.value = `Ukuran berkas "${file.name}" melebihi batas maksimal (maks 50 MB).`
+      if (fileInputRef.value) fileInputRef.value.value = ''
+      return
+    }
+  }
+
+  isUploading.value = true
 
   const formData = new FormData()
   for (const file of Array.from(target.files)) {
@@ -78,9 +94,9 @@ const handleFileUpload = async (event: Event) => {
     await adminApi.uploadMedia(formData)
     await fetchMedia()
   } catch (err: unknown) {
-    const errorObj = err as { data?: { error?: { message?: string } } }
+    const errorObj = err as { data?: { error?: { message?: string } }; message?: string }
     uploadError.value =
-      errorObj.data?.error?.message || 'Gagal mengunggah berkas.'
+      errorObj.data?.error?.message || errorObj.message || 'Gagal mengunggah berkas. Format mungkin tidak didukung.'
   } finally {
     isUploading.value = false
     if (fileInputRef.value) fileInputRef.value.value = ''
@@ -205,7 +221,7 @@ useSeoMeta({
             ref="fileInputRef"
             type="file"
             multiple
-            accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,application/pdf"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,.ico,.svg,video/mp4,video/webm,application/pdf"
             :disabled="isUploading"
             class="hidden-file-input"
             @change="handleFileUpload"
