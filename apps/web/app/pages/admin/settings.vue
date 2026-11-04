@@ -691,7 +691,7 @@ useSeoMeta({
               </div>
 
               <div class="section-editor-preview">
-                <div class="live-preview-box live-preview-box--terracotta">
+                <div class="live-preview-box live-preview-box--terracotta" style="background-color: var(--red, #DA3F1B) !important;">
                   <span class="preview-tag">Pratinjau Tampilan (Latar Terracotta):</span>
                   <span class="preview-label preview-label--light">{{ settingsForm.contactLabel || 'KONTAK' }}</span>
                   <h2 class="preview-heading preview-heading--light">
@@ -913,8 +913,10 @@ useSeoMeta({
   position: relative;
 }
 
-.live-preview-box--terracotta {
-  background: var(--terracotta);
+.live-preview-box--terracotta,
+.live-preview-box.live-preview-box--terracotta {
+  background: var(--red, #DA3F1B) !important;
+  color: var(--cream, #F6EDE0);
 }
 
 .preview-tag {
@@ -938,13 +940,14 @@ useSeoMeta({
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--red, #DA3F1B);
   margin-bottom: 6px;
 }
 
-.preview-label--light {
-  color: #fff;
-  opacity: 0.9;
+.preview-label--light,
+.live-preview-box--terracotta .preview-label {
+  color: var(--yellow, #F2B84B) !important;
+  opacity: 1;
 }
 
 .preview-heading {
@@ -956,8 +959,9 @@ useSeoMeta({
   margin: 0 0 8px;
 }
 
-.preview-heading--light {
-  color: #fff;
+.preview-heading--light,
+.live-preview-box--terracotta .preview-heading {
+  color: var(--cream, #F6EDE0) !important;
 }
 
 .preview-accent {
@@ -965,8 +969,9 @@ useSeoMeta({
   color: var(--accent-orange, #d9531e);
 }
 
-.preview-accent--gold {
-  color: var(--yellow, #f7c948);
+.preview-accent--gold,
+.live-preview-box--terracotta .preview-accent {
+  color: var(--yellow, #F2B84B) !important;
 }
 
 .preview-subtitle {
