@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import type { PublicMedia } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminSiteSettingsData } from '~/composables/useAdminApi'
 import MediaPickerModal from '~/components/admin/MediaPickerModal.vue'
 
@@ -11,10 +12,10 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const activeTab = ref<'general' | 'sections' | 'password'>('general')
 const isLoading = ref(true)
-const statusMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Settings Form
 const settingsForm = ref<Partial<AdminSiteSettingsData>>({
@@ -63,7 +64,6 @@ const passwordForm = ref({
   confirmPassword: '',
 })
 const isChangingPassword = ref(false)
-const passwordMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 const loadSettings = async () => {
   isLoading.value = true
@@ -88,7 +88,6 @@ onMounted(() => {
 
 const handleSaveSettings = async () => {
   isSavingSettings.value = true
-  statusMessage.value = null
 
   try {
     const updated = await adminApi.updateSettings({
@@ -127,13 +126,10 @@ const handleSaveSettings = async () => {
       ...settingsForm.value,
       ...updated,
     }
-    statusMessage.value = { type: 'success', text: 'Pengaturan berhasil disimpan!' }
+    toast.success('Pengaturan berhasil disimpan!')
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
-    statusMessage.value = {
-      type: 'error',
-      text: errorObj.data?.error?.message || 'Gagal menyimpan pengaturan.',
-    }
+    toast.error(errorObj.data?.error?.message || 'Gagal menyimpan pengaturan.')
   } finally {
     isSavingSettings.value = false
   }
@@ -155,33 +151,23 @@ const handleFaviconSelected = (media: PublicMedia | PublicMedia[]) => {
 
 const handleChangePassword = async () => {
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    passwordMessage.value = {
-      type: 'error',
-      text: 'Konfirmasi kata sandi baru tidak cocok.',
-    }
+    toast.error('Konfirmasi kata sandi baru tidak cocok.')
     return
   }
 
   if (passwordForm.value.newPassword.length < 12) {
-    passwordMessage.value = {
-      type: 'error',
-      text: 'Kata sandi baru minimal harus 12 karakter.',
-    }
+    toast.error('Kata sandi baru minimal harus 12 karakter.')
     return
   }
 
   isChangingPassword.value = true
-  passwordMessage.value = null
 
   try {
     const res = await adminApi.changePassword({
       currentPassword: passwordForm.value.currentPassword,
       newPassword: passwordForm.value.newPassword,
     })
-    passwordMessage.value = {
-      type: 'success',
-      text: res.message || 'Kata sandi berhasil diperbarui.',
-    }
+    toast.success(res.message || 'Kata sandi berhasil diperbarui.')
     passwordForm.value = {
       currentPassword: '',
       newPassword: '',
@@ -189,10 +175,7 @@ const handleChangePassword = async () => {
     }
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
-    passwordMessage.value = {
-      type: 'error',
-      text: errorObj.data?.error?.message || 'Gagal mengubah kata sandi.',
-    }
+    toast.error(errorObj.data?.error?.message || 'Gagal mengubah kata sandi.')
   } finally {
     isChangingPassword.value = false
   }
@@ -211,16 +194,6 @@ useSeoMeta({
         <span class="label">Konfigurasi</span>
         <h1>Pengaturan <em>Situs.</em></h1>
       </div>
-    </div>
-
-    <!-- Alert Status -->
-    <div
-      v-if="statusMessage"
-      class="alert-bar"
-      :class="statusMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-      role="alert"
-    >
-      {{ statusMessage.text }}
     </div>
 
     <!-- Tab Bar -->
@@ -283,86 +256,89 @@ useSeoMeta({
             />
           </div>
 
-          <!-- Open Graph Image Picker -->
-          <div class="og-picker-box">
-            <label>Gambar Open Graph (og:image untuk media sosial & preview link)</label>
-            <div class="og-preview-frame">
-              <img
-                v-if="selectedOgImage?.urls?.md || selectedOgImage?.urls?.original"
-                :src="(selectedOgImage.urls.md || selectedOgImage.urls.original) ?? undefined"
-                alt="OG Preview"
-              >
-              <div v-else class="empty-og">Belum ada gambar Open Graph</div>
-            </div>
-
-            <div class="og-btn-row">
-              <button
-                type="button"
-                class="btn"
-                @click="isOgPickerOpen = true"
-              >
-                Pilih Gambar OG
-              </button>
-              <button
-                v-if="settingsForm.ogImageMediaId"
-                type="button"
-                class="btn text-btn"
-                @click="
-                  settingsForm.ogImageMediaId = null;
-                  selectedOgImage = null;
-                "
-              >
-                Hapus
-              </button>
-            </div>
-          </div>
-
-          <!-- Favicon / Ikon Tab Browser Picker -->
-          <div class="favicon-picker-box">
-            <label>Favicon / Ikon Tab Browser (Pengganti Logo Nuxt di Tab)</label>
-            <p class="picker-sub">
-              Unggah logo ikon Anda sendiri untuk menggantikan ikon default Nuxt di tab peramban (disarankan PNG, SVG, atau ICO rasio 1:1).
-            </p>
-
-            <div class="browser-tab-mock">
-              <div class="tab-preview">
+          <!-- Baris Picker Gambar OG & Favicon (2 Kolom) -->
+          <div class="media-pickers-row">
+            <!-- Open Graph Image Picker -->
+            <div class="og-picker-box">
+              <label>Gambar Open Graph (og:image untuk media sosial & preview link)</label>
+              <div class="og-preview-frame">
                 <img
-                  v-if="selectedFavicon?.urls?.thumb || selectedFavicon?.urls?.original"
-                  :src="(selectedFavicon.urls.thumb || selectedFavicon.urls.original) ?? undefined"
-                  alt="Favicon Preview"
-                  class="tab-favicon"
+                  v-if="selectedOgImage?.urls?.md || selectedOgImage?.urls?.original"
+                  :src="(selectedOgImage.urls.md || selectedOgImage.urls.original) ?? undefined"
+                  alt="OG Preview"
                 >
-                <div v-else class="tab-favicon-fallback">
-                  <svg viewBox="0 0 24 24" class="tab-fallback-svg" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10" stroke-width="2" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h20" />
-                  </svg>
-                </div>
-                <span class="tab-title">{{ settingsForm.siteTitle || 'Web Portofolio' }}</span>
-                <span class="tab-close" aria-hidden="true">×</span>
+                <div v-else class="empty-og">Belum ada gambar Open Graph</div>
+              </div>
+
+              <div class="og-btn-row">
+                <button
+                  type="button"
+                  class="btn"
+                  @click="isOgPickerOpen = true"
+                >
+                  Pilih Gambar OG
+                </button>
+                <button
+                  v-if="settingsForm.ogImageMediaId"
+                  type="button"
+                  class="btn text-btn"
+                  @click="
+                    settingsForm.ogImageMediaId = null;
+                    selectedOgImage = null;
+                  "
+                >
+                  Hapus
+                </button>
               </div>
             </div>
 
-            <div class="favicon-btn-row">
-              <button
-                type="button"
-                class="btn"
-                @click="isFaviconPickerOpen = true"
-              >
-                Pilih Favicon dari Pustaka
-              </button>
-              <button
-                v-if="settingsForm.faviconMediaId"
-                type="button"
-                class="btn text-btn"
-                @click="
-                  settingsForm.faviconMediaId = null;
-                  selectedFavicon = null;
-                "
-              >
-                Hapus Favicon (Gunakan Default)
-              </button>
+            <!-- Favicon / Ikon Tab Browser Picker -->
+            <div class="favicon-picker-box">
+              <label>Favicon / Ikon Tab Browser (Pengganti Logo Nuxt di Tab)</label>
+              <p class="picker-sub">
+                Unggah logo ikon Anda sendiri untuk menggantikan ikon default Nuxt di tab peramban (disarankan PNG, SVG, atau ICO rasio 1:1).
+              </p>
+
+              <div class="browser-tab-mock">
+                <div class="tab-preview">
+                  <img
+                    v-if="selectedFavicon?.urls?.thumb || selectedFavicon?.urls?.original"
+                    :src="(selectedFavicon.urls.thumb || selectedFavicon.urls.original) ?? undefined"
+                    alt="Favicon Preview"
+                    class="tab-favicon"
+                  >
+                  <div v-else class="tab-favicon-fallback">
+                    <svg viewBox="0 0 24 24" class="tab-fallback-svg" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="10" stroke-width="2" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h20" />
+                    </svg>
+                  </div>
+                  <span class="tab-title">{{ settingsForm.siteTitle || 'Web Portofolio' }}</span>
+                  <span class="tab-close" aria-hidden="true">×</span>
+                </div>
+              </div>
+
+              <div class="favicon-btn-row">
+                <button
+                  type="button"
+                  class="btn"
+                  @click="isFaviconPickerOpen = true"
+                >
+                  Pilih Favicon dari Pustaka
+                </button>
+                <button
+                  v-if="settingsForm.faviconMediaId"
+                  type="button"
+                  class="btn text-btn"
+                  @click="
+                    settingsForm.faviconMediaId = null;
+                    selectedFavicon = null;
+                  "
+                >
+                  Hapus Favicon (Gunakan Default)
+                </button>
+              </div>
             </div>
           </div>
 
@@ -410,45 +386,50 @@ useSeoMeta({
               <p class="section-sub">Mengatur label atas dan judul headline di bagian cerita diri.</p>
             </div>
 
-            <!-- Preview -->
-            <div class="live-preview-box">
-              <span class="preview-tag">Pratinjau Tampilan:</span>
-              <span class="preview-label">{{ settingsForm.aboutLabel || 'TENTANG SAYA' }}</span>
-              <h2 class="preview-heading">
-                {{ settingsForm.aboutTitleMain || 'Membangun, ' }}
-                <em class="preview-accent">{{ settingsForm.aboutTitleAccent || 'lalu menguji.' }}</em>
-              </h2>
-            </div>
+            <div class="section-editor-split">
+              <div class="section-editor-fields">
+                <div class="form-group">
+                  <label for="aboutLabel">Label Kategori</label>
+                  <input
+                    id="aboutLabel"
+                    v-model="settingsForm.aboutLabel"
+                    type="text"
+                    placeholder="Contoh: TENTANG SAYA"
+                  >
+                </div>
 
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label for="aboutLabel">Label Kategori</label>
-                <input
-                  id="aboutLabel"
-                  v-model="settingsForm.aboutLabel"
-                  type="text"
-                  placeholder="Contoh: TENTANG SAYA"
-                >
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="aboutTitleMain">Judul Teks Biasa</label>
+                    <input
+                      id="aboutTitleMain"
+                      v-model="settingsForm.aboutTitleMain"
+                      type="text"
+                      placeholder="Contoh: Membangun, "
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="aboutTitleAccent">Judul Aksen Italic Oranye</label>
+                    <input
+                      id="aboutTitleAccent"
+                      v-model="settingsForm.aboutTitleAccent"
+                      type="text"
+                      placeholder="Contoh: lalu menguji."
+                    >
+                  </div>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="aboutTitleMain">Judul Teks Biasa</label>
-                <input
-                  id="aboutTitleMain"
-                  v-model="settingsForm.aboutTitleMain"
-                  type="text"
-                  placeholder="Contoh: Membangun, "
-                >
-              </div>
-
-              <div class="form-group">
-                <label for="aboutTitleAccent">Judul Aksen Italic Oranye</label>
-                <input
-                  id="aboutTitleAccent"
-                  v-model="settingsForm.aboutTitleAccent"
-                  type="text"
-                  placeholder="Contoh: lalu menguji."
-                >
+              <div class="section-editor-preview">
+                <div class="live-preview-box">
+                  <span class="preview-tag">Pratinjau Tampilan:</span>
+                  <span class="preview-label">{{ settingsForm.aboutLabel || 'TENTANG SAYA' }}</span>
+                  <h2 class="preview-heading">
+                    {{ settingsForm.aboutTitleMain || 'Membangun, ' }}
+                    <em class="preview-accent">{{ settingsForm.aboutTitleAccent || 'lalu menguji.' }}</em>
+                  </h2>
+                </div>
               </div>
             </div>
           </div>
@@ -460,59 +441,64 @@ useSeoMeta({
               <p class="section-sub">Mengatur label, judul, dan deskripsi singkat di galeri karya.</p>
             </div>
 
-            <!-- Preview -->
-            <div class="live-preview-box">
-              <span class="preview-tag">Pratinjau Tampilan:</span>
-              <span class="preview-label">{{ settingsForm.projectsLabel || 'KARYA PILIHAN' }}</span>
-              <h2 class="preview-heading">
-                {{ settingsForm.projectsTitleMain || 'Pilihan ' }}
-                <em class="preview-accent">{{ settingsForm.projectsTitleAccent || 'karya.' }}</em>
-              </h2>
-              <p class="preview-subtitle">
-                {{ settingsForm.projectsSubtitle || 'Beberapa proyek yang saya rancang, kembangkan, dan uji kualitasnya.' }}
-              </p>
-            </div>
+            <div class="section-editor-split">
+              <div class="section-editor-fields">
+                <div class="form-group">
+                  <label for="projectsLabel">Label Kategori</label>
+                  <input
+                    id="projectsLabel"
+                    v-model="settingsForm.projectsLabel"
+                    type="text"
+                    placeholder="Contoh: KARYA PILIHAN"
+                  >
+                </div>
 
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label for="projectsLabel">Label Kategori</label>
-                <input
-                  id="projectsLabel"
-                  v-model="settingsForm.projectsLabel"
-                  type="text"
-                  placeholder="Contoh: KARYA PILIHAN"
-                >
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="projectsTitleMain">Judul Teks Biasa</label>
+                    <input
+                      id="projectsTitleMain"
+                      v-model="settingsForm.projectsTitleMain"
+                      type="text"
+                      placeholder="Contoh: Pilihan "
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="projectsTitleAccent">Judul Aksen Italic Oranye</label>
+                    <input
+                      id="projectsTitleAccent"
+                      v-model="settingsForm.projectsTitleAccent"
+                      type="text"
+                      placeholder="Contoh: karya."
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectsSubtitle">Deskripsi / Subtitle Bagian Proyek</label>
+                  <textarea
+                    id="projectsSubtitle"
+                    v-model="settingsForm.projectsSubtitle"
+                    rows="2"
+                    placeholder="Contoh: Beberapa proyek yang saya rancang, kembangkan, dan uji kualitasnya."
+                  />
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="projectsTitleMain">Judul Teks Biasa</label>
-                <input
-                  id="projectsTitleMain"
-                  v-model="settingsForm.projectsTitleMain"
-                  type="text"
-                  placeholder="Contoh: Pilihan "
-                >
+              <div class="section-editor-preview">
+                <div class="live-preview-box">
+                  <span class="preview-tag">Pratinjau Tampilan:</span>
+                  <span class="preview-label">{{ settingsForm.projectsLabel || 'KARYA PILIHAN' }}</span>
+                  <h2 class="preview-heading">
+                    {{ settingsForm.projectsTitleMain || 'Pilihan ' }}
+                    <em class="preview-accent">{{ settingsForm.projectsTitleAccent || 'karya.' }}</em>
+                  </h2>
+                  <p class="preview-subtitle">
+                    {{ settingsForm.projectsSubtitle || 'Beberapa proyek yang saya rancang, kembangkan, dan uji kualitasnya.' }}
+                  </p>
+                </div>
               </div>
-
-              <div class="form-group">
-                <label for="projectsTitleAccent">Judul Aksen Italic Oranye</label>
-                <input
-                  id="projectsTitleAccent"
-                  v-model="settingsForm.projectsTitleAccent"
-                  type="text"
-                  placeholder="Contoh: karya."
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="projectsSubtitle">Deskripsi / Subtitle Bagian Proyek</label>
-              <textarea
-                id="projectsSubtitle"
-                v-model="settingsForm.projectsSubtitle"
-                rows="2"
-                placeholder="Contoh: Beberapa proyek yang saya rancang, kembangkan, dan uji kualitasnya."
-              />
             </div>
           </div>
 
@@ -523,59 +509,64 @@ useSeoMeta({
               <p class="section-sub">Mengatur label, judul, dan deskripsi di bagian daftar keahlian teknis.</p>
             </div>
 
-            <!-- Preview -->
-            <div class="live-preview-box">
-              <span class="preview-tag">Pratinjau Tampilan:</span>
-              <span class="preview-label">{{ settingsForm.skillsLabel || 'KEAHLIAN' }}</span>
-              <h2 class="preview-heading">
-                {{ settingsForm.skillsTitleMain || 'Alat dan ' }}
-                <em class="preview-accent">{{ settingsForm.skillsTitleAccent || 'teknologi.' }}</em>
-              </h2>
-              <p class="preview-subtitle">
-                {{ settingsForm.skillsSubtitle || 'Teknologi, framework, dan perkakas yang saya gunakan untuk membangun antarmuka web dan otomatisasi pengujian.' }}
-              </p>
-            </div>
+            <div class="section-editor-split">
+              <div class="section-editor-fields">
+                <div class="form-group">
+                  <label for="skillsLabel">Label Kategori</label>
+                  <input
+                    id="skillsLabel"
+                    v-model="settingsForm.skillsLabel"
+                    type="text"
+                    placeholder="Contoh: KEAHLIAN"
+                  >
+                </div>
 
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label for="skillsLabel">Label Kategori</label>
-                <input
-                  id="skillsLabel"
-                  v-model="settingsForm.skillsLabel"
-                  type="text"
-                  placeholder="Contoh: KEAHLIAN"
-                >
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="skillsTitleMain">Judul Teks Biasa</label>
+                    <input
+                      id="skillsTitleMain"
+                      v-model="settingsForm.skillsTitleMain"
+                      type="text"
+                      placeholder="Contoh: Alat dan "
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="skillsTitleAccent">Judul Aksen Italic Oranye</label>
+                    <input
+                      id="skillsTitleAccent"
+                      v-model="settingsForm.skillsTitleAccent"
+                      type="text"
+                      placeholder="Contoh: teknologi."
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="skillsSubtitle">Deskripsi / Subtitle Bagian Keahlian</label>
+                  <textarea
+                    id="skillsSubtitle"
+                    v-model="settingsForm.skillsSubtitle"
+                    rows="2"
+                    placeholder="Contoh: Teknologi, framework, dan perkakas yang saya gunakan untuk membangun antarmuka web dan otomatisasi pengujian."
+                  />
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="skillsTitleMain">Judul Teks Biasa</label>
-                <input
-                  id="skillsTitleMain"
-                  v-model="settingsForm.skillsTitleMain"
-                  type="text"
-                  placeholder="Contoh: Alat dan "
-                >
+              <div class="section-editor-preview">
+                <div class="live-preview-box">
+                  <span class="preview-tag">Pratinjau Tampilan:</span>
+                  <span class="preview-label">{{ settingsForm.skillsLabel || 'KEAHLIAN' }}</span>
+                  <h2 class="preview-heading">
+                    {{ settingsForm.skillsTitleMain || 'Alat dan ' }}
+                    <em class="preview-accent">{{ settingsForm.skillsTitleAccent || 'teknologi.' }}</em>
+                  </h2>
+                  <p class="preview-subtitle">
+                    {{ settingsForm.skillsSubtitle || 'Teknologi, framework, dan perkakas yang saya gunakan untuk membangun antarmuka web dan otomatisasi pengujian.' }}
+                  </p>
+                </div>
               </div>
-
-              <div class="form-group">
-                <label for="skillsTitleAccent">Judul Aksen Italic Oranye</label>
-                <input
-                  id="skillsTitleAccent"
-                  v-model="settingsForm.skillsTitleAccent"
-                  type="text"
-                  placeholder="Contoh: teknologi."
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="skillsSubtitle">Deskripsi / Subtitle Bagian Keahlian</label>
-              <textarea
-                id="skillsSubtitle"
-                v-model="settingsForm.skillsSubtitle"
-                rows="2"
-                placeholder="Contoh: Teknologi, framework, dan perkakas yang saya gunakan untuk membangun antarmuka web dan otomatisasi pengujian."
-              />
             </div>
           </div>
 
@@ -586,59 +577,64 @@ useSeoMeta({
               <p class="section-sub">Mengatur label, judul, dan deskripsi di bagian rekam jejak linimasa.</p>
             </div>
 
-            <!-- Preview -->
-            <div class="live-preview-box">
-              <span class="preview-tag">Pratinjau Tampilan:</span>
-              <span class="preview-label">{{ settingsForm.experiencesLabel || 'PERJALANAN' }}</span>
-              <h2 class="preview-heading">
-                {{ settingsForm.experiencesTitleMain || 'Satu langkah, ' }}
-                <em class="preview-accent">{{ settingsForm.experiencesTitleAccent || 'lalu berikutnya.' }}</em>
-              </h2>
-              <p class="preview-subtitle">
-                {{ settingsForm.experiencesSubtitle || 'Catatan pengalaman kerja, proyek freelance, dan pendidikan yang membentuk pemahaman teknis saya.' }}
-              </p>
-            </div>
+            <div class="section-editor-split">
+              <div class="section-editor-fields">
+                <div class="form-group">
+                  <label for="experiencesLabel">Label Kategori</label>
+                  <input
+                    id="experiencesLabel"
+                    v-model="settingsForm.experiencesLabel"
+                    type="text"
+                    placeholder="Contoh: PERJALANAN"
+                  >
+                </div>
 
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label for="experiencesLabel">Label Kategori</label>
-                <input
-                  id="experiencesLabel"
-                  v-model="settingsForm.experiencesLabel"
-                  type="text"
-                  placeholder="Contoh: PERJALANAN"
-                >
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="experiencesTitleMain">Judul Teks Biasa</label>
+                    <input
+                      id="experiencesTitleMain"
+                      v-model="settingsForm.experiencesTitleMain"
+                      type="text"
+                      placeholder="Contoh: Satu langkah, "
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="experiencesTitleAccent">Judul Aksen Italic Oranye</label>
+                    <input
+                      id="experiencesTitleAccent"
+                      v-model="settingsForm.experiencesTitleAccent"
+                      type="text"
+                      placeholder="Contoh: lalu berikutnya."
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="experiencesSubtitle">Deskripsi / Subtitle Bagian Perjalanan</label>
+                  <textarea
+                    id="experiencesSubtitle"
+                    v-model="settingsForm.experiencesSubtitle"
+                    rows="2"
+                    placeholder="Contoh: Catatan pengalaman kerja, proyek freelance, dan pendidikan yang membentuk pemahaman teknis saya."
+                  />
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="experiencesTitleMain">Judul Teks Biasa</label>
-                <input
-                  id="experiencesTitleMain"
-                  v-model="settingsForm.experiencesTitleMain"
-                  type="text"
-                  placeholder="Contoh: Satu langkah, "
-                >
+              <div class="section-editor-preview">
+                <div class="live-preview-box">
+                  <span class="preview-tag">Pratinjau Tampilan:</span>
+                  <span class="preview-label">{{ settingsForm.experiencesLabel || 'PERJALANAN' }}</span>
+                  <h2 class="preview-heading">
+                    {{ settingsForm.experiencesTitleMain || 'Satu langkah, ' }}
+                    <em class="preview-accent">{{ settingsForm.experiencesTitleAccent || 'lalu berikutnya.' }}</em>
+                  </h2>
+                  <p class="preview-subtitle">
+                    {{ settingsForm.experiencesSubtitle || 'Catatan pengalaman kerja, proyek freelance, dan pendidikan yang membentuk pemahaman teknis saya.' }}
+                  </p>
+                </div>
               </div>
-
-              <div class="form-group">
-                <label for="experiencesTitleAccent">Judul Aksen Italic Oranye</label>
-                <input
-                  id="experiencesTitleAccent"
-                  v-model="settingsForm.experiencesTitleAccent"
-                  type="text"
-                  placeholder="Contoh: lalu berikutnya."
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="experiencesSubtitle">Deskripsi / Subtitle Bagian Perjalanan</label>
-              <textarea
-                id="experiencesSubtitle"
-                v-model="settingsForm.experiencesSubtitle"
-                rows="2"
-                placeholder="Contoh: Catatan pengalaman kerja, proyek freelance, dan pendidikan yang membentuk pemahaman teknis saya."
-              />
             </div>
           </div>
 
@@ -649,59 +645,64 @@ useSeoMeta({
               <p class="section-sub">Mengatur label, judul, dan deskripsi ajakan di bagian formulir & tautan kontak.</p>
             </div>
 
-            <!-- Preview -->
-            <div class="live-preview-box live-preview-box--terracotta">
-              <span class="preview-tag">Pratinjau Tampilan (Latar Terracotta):</span>
-              <span class="preview-label preview-label--light">{{ settingsForm.contactLabel || 'KONTAK' }}</span>
-              <h2 class="preview-heading preview-heading--light">
-                {{ settingsForm.contactTitleMain || 'Ayo ' }}
-                <em class="preview-accent preview-accent--gold">{{ settingsForm.contactTitleAccent || 'ngobrol.' }}</em>
-              </h2>
-              <p class="preview-subtitle preview-subtitle--light">
-                {{ settingsForm.contactSubtitle || 'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.' }}
-              </p>
-            </div>
+            <div class="section-editor-split">
+              <div class="section-editor-fields">
+                <div class="form-group">
+                  <label for="contactLabel">Label Kategori</label>
+                  <input
+                    id="contactLabel"
+                    v-model="settingsForm.contactLabel"
+                    type="text"
+                    placeholder="Contoh: KONTAK"
+                  >
+                </div>
 
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label for="contactLabel">Label Kategori</label>
-                <input
-                  id="contactLabel"
-                  v-model="settingsForm.contactLabel"
-                  type="text"
-                  placeholder="Contoh: KONTAK"
-                >
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="contactTitleMain">Judul Teks Biasa</label>
+                    <input
+                      id="contactTitleMain"
+                      v-model="settingsForm.contactTitleMain"
+                      type="text"
+                      placeholder="Contoh: Ayo "
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="contactTitleAccent">Judul Aksen Italic Oranye/Kuning</label>
+                    <input
+                      id="contactTitleAccent"
+                      v-model="settingsForm.contactTitleAccent"
+                      type="text"
+                      placeholder="Contoh: ngobrol."
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="contactSubtitle">Deskripsi / Subtitle Bagian Kontak</label>
+                  <textarea
+                    id="contactSubtitle"
+                    v-model="settingsForm.contactSubtitle"
+                    rows="2"
+                    placeholder="Contoh: Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung."
+                  />
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="contactTitleMain">Judul Teks Biasa</label>
-                <input
-                  id="contactTitleMain"
-                  v-model="settingsForm.contactTitleMain"
-                  type="text"
-                  placeholder="Contoh: Ayo "
-                >
+              <div class="section-editor-preview">
+                <div class="live-preview-box live-preview-box--terracotta">
+                  <span class="preview-tag">Pratinjau Tampilan (Latar Terracotta):</span>
+                  <span class="preview-label preview-label--light">{{ settingsForm.contactLabel || 'KONTAK' }}</span>
+                  <h2 class="preview-heading preview-heading--light">
+                    {{ settingsForm.contactTitleMain || 'Ayo ' }}
+                    <em class="preview-accent preview-accent--gold">{{ settingsForm.contactTitleAccent || 'ngobrol.' }}</em>
+                  </h2>
+                  <p class="preview-subtitle preview-subtitle--light">
+                    {{ settingsForm.contactSubtitle || 'Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung.' }}
+                  </p>
+                </div>
               </div>
-
-              <div class="form-group">
-                <label for="contactTitleAccent">Judul Aksen Italic Oranye/Kuning</label>
-                <input
-                  id="contactTitleAccent"
-                  v-model="settingsForm.contactTitleAccent"
-                  type="text"
-                  placeholder="Contoh: ngobrol."
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="contactSubtitle">Deskripsi / Subtitle Bagian Kontak</label>
-              <textarea
-                id="contactSubtitle"
-                v-model="settingsForm.contactSubtitle"
-                rows="2"
-                placeholder="Contoh: Punya proyek atau kesempatan kerja sama? Kirim pesan lewat formulir di bawah atau hubungi saya langsung."
-              />
             </div>
           </div>
 
@@ -722,15 +723,6 @@ useSeoMeta({
       <section v-else-if="activeTab === 'password'" class="card password-card">
         <h2>Ganti Kata Sandi Admin</h2>
         <p class="section-sub">Pastikan kata sandi baru kuat dan minimal 12 karakter.</p>
-
-        <div
-          v-if="passwordMessage"
-          class="alert-bar"
-          :class="passwordMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-          role="alert"
-        >
-          {{ passwordMessage.text }}
-        </div>
 
         <form class="password-form" @submit.prevent="handleChangePassword">
           <div class="form-group">
@@ -856,7 +848,7 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
   gap: 32px;
-  max-width: 900px;
+  width: 100%;
 }
 
 .settings-card,
@@ -865,8 +857,39 @@ useSeoMeta({
   padding: 32px;
 }
 
+.media-pickers-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin: 20px 0;
+}
+
 .section-editor-card {
   margin-bottom: 28px;
+}
+
+.section-editor-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.section-editor-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-editor-preview {
+  position: sticky;
+  top: 24px;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .section-editor-header h3 {
@@ -1173,7 +1196,23 @@ useSeoMeta({
   margin-top: 16px;
 }
 
+@media (max-width: 1024px) {
+  .section-editor-split {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .media-pickers-row {
+    grid-template-columns: 1fr;
+  }
+
+  .section-editor-preview {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
+  .form-grid-2,
   .form-grid-3 {
     grid-template-columns: 1fr;
   }

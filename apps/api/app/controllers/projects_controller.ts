@@ -61,12 +61,20 @@ export default class ProjectsController {
     const { skillIds, mediaIds, startedOn, endedOn, ...payload } =
       await request.validateUsing(createProjectValidator)
 
-    const existingSlug = await Project.findBy('slug', payload.slug)
+    const rawSlug =
+      payload.slug && payload.slug.trim() !== ''
+        ? payload.slug.trim()
+        : payload.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '') || `proyek-${Date.now()}`
+
+    const existingSlug = await Project.findBy('slug', rawSlug)
     if (existingSlug) {
       return response.conflict({
         error: {
           code: 'CONFLICT',
-          message: `Slug "${payload.slug}" sudah digunakan oleh proyek lain.`,
+          message: `Slug "${rawSlug}" sudah digunakan oleh proyek lain.`,
           details: [{ field: 'slug', message: 'Slug harus unik.' }],
         },
       })
@@ -90,13 +98,40 @@ export default class ProjectsController {
       payload.sortOrder = (maxSort?.$extras.max ?? -1) + 1
     }
 
+    const isPublished = payload.status === 'published'
+    if (isPublished) {
+      if (!payload.summary || payload.summary.trim() === '') {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Ringkasan proyek wajib diisi sebelum diterbitkan.',
+            details: [{ field: 'summary', message: 'Ringkasan wajib diisi.' }],
+          },
+        })
+      }
+      if (!payload.coverMediaId) {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Cover media wajib dipilih sebelum diterbitkan.',
+            details: [{ field: 'coverMediaId', message: 'Cover media wajib dipilih.' }],
+          },
+        })
+      }
+    }
+
     const project = new Project()
-    project.merge(payload)
+    project.merge({
+      ...payload,
+      slug: rawSlug,
+      summary: payload.summary ?? '',
+      descriptionMd: payload.descriptionMd ?? '',
+    })
 
     if (startedOn) project.startedOn = DateTime.fromISO(startedOn)
     if (endedOn) project.endedOn = DateTime.fromISO(endedOn)
 
-    if (payload.status === 'published') {
+    if (isPublished) {
       project.publishedAt = DateTime.now()
     }
 
@@ -161,7 +196,38 @@ export default class ProjectsController {
       }
     }
 
-    project.merge(payload)
+    if (payload.status === 'published') {
+      const finalSummary = payload.summary !== undefined ? payload.summary : project.summary
+      const finalCoverId =
+        payload.coverMediaId !== undefined ? payload.coverMediaId : project.coverMediaId
+
+      if (!finalSummary || finalSummary.trim() === '') {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Ringkasan proyek wajib diisi sebelum diterbitkan.',
+            details: [{ field: 'summary', message: 'Ringkasan wajib diisi.' }],
+          },
+        })
+      }
+      if (!finalCoverId) {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Cover media wajib dipilih sebelum diterbitkan.',
+            details: [{ field: 'coverMediaId', message: 'Cover media wajib dipilih.' }],
+          },
+        })
+      }
+    }
+
+    project.merge({
+      ...payload,
+      ...(payload.summary !== undefined ? { summary: payload.summary ?? '' } : {}),
+      ...(payload.descriptionMd !== undefined
+        ? { descriptionMd: payload.descriptionMd ?? '' }
+        : {}),
+    })
 
     if (startedOn !== undefined) {
       project.startedOn = startedOn ? DateTime.fromISO(startedOn) : null
@@ -203,6 +269,27 @@ export default class ProjectsController {
   async updateStatus({ params, request, response }: HttpContext) {
     const project = await Project.findOrFail(params.id)
     const { status } = await request.validateUsing(updateProjectStatusValidator)
+
+    if (status === 'published') {
+      if (!project.summary || project.summary.trim() === '') {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Ringkasan proyek wajib diisi sebelum diterbitkan.',
+            details: [{ field: 'summary', message: 'Ringkasan proyek wajib diisi.' }],
+          },
+        })
+      }
+      if (!project.coverMediaId) {
+        return response.badRequest({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Cover media wajib dipilih sebelum diterbitkan.',
+            details: [{ field: 'coverMediaId', message: 'Cover media wajib dipilih.' }],
+          },
+        })
+      }
+    }
 
     project.status = status
     if (status === 'published' && !project.publishedAt) {

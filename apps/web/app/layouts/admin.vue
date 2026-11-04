@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAdminAuth } from '~/composables/useAdminAuth'
+import AdminToastModal from '~/components/admin/AdminToastModal.vue'
 
 const route = useRoute()
 const { user, logout } = useAdminAuth()
@@ -25,6 +26,13 @@ const isActive = (path: string) => {
   }
   return route.path.startsWith(path)
 }
+
+const currentSectionLabel = computed(() => {
+  if (route.path.startsWith('/admin/projects/new')) return 'Buat Proyek Baru'
+  if (route.path.startsWith('/admin/projects/')) return 'Sunting Proyek'
+  const current = navLinks.find((l) => isActive(l.to))
+  return current ? current.label : 'Panel Pengelola'
+})
 </script>
 
 <template>
@@ -97,23 +105,31 @@ const isActive = (path: string) => {
     <!-- Area Konten Utama -->
     <div class="main-column">
       <header class="topbar">
-        <button
-          type="button"
-          class="mobile-menu-btn"
-          aria-label="Buka menu navigasi"
-          @click="isMobileNavOpen = true"
-        >
-          ☰ Menu
-        </button>
+        <div class="topbar-left">
+          <button
+            type="button"
+            class="mobile-menu-btn"
+            aria-label="Buka menu navigasi"
+            @click="isMobileNavOpen = true"
+          >
+            ☰ Menu
+          </button>
+
+          <div class="topbar-breadcrumb">
+            <span class="breadcrumb-root">BUNN CMS</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">{{ currentSectionLabel }}</span>
+          </div>
+        </div>
 
         <div class="topbar-right">
-          <NuxtLink to="/" target="_blank" class="topbar-site-link">
-            <svg class="topbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Buka Situs Publik ↗</span>
-          </NuxtLink>
-          <button type="button" class="topbar-logout" @click="logout">
-            Keluar
-          </button>
+          <div class="system-status-pill">
+            <span class="status-dot" />
+            <span class="status-text">Mode Pengelola</span>
+          </div>
+          <div class="host-pill">
+            <span>bunn.my.id</span>
+          </div>
         </div>
       </header>
 
@@ -121,6 +137,9 @@ const isActive = (path: string) => {
         <slot />
       </main>
     </div>
+
+    <!-- Modal Notifikasi Global -->
+    <AdminToastModal />
   </div>
 </template>
 
@@ -290,9 +309,40 @@ const isActive = (path: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 28px;
+  padding: 14px 28px;
   background: var(--paper);
   border-bottom: 2px solid var(--ink);
+  gap: 16px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.breadcrumb-root {
+  font-family: var(--serif);
+  font-weight: 900;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.breadcrumb-sep {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.breadcrumb-current {
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .mobile-menu-btn {
@@ -308,46 +358,50 @@ const isActive = (path: string) => {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-left: auto;
+  gap: 12px;
 }
 
-.topbar-site-link {
+.system-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  padding: 5px 12px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1.5px solid rgba(34, 197, 94, 0.4);
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--ink);
-  padding: 6px 12px;
+  color: #15803d;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+}
+
+.host-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: var(--cream);
   border: 1.5px solid var(--ink);
   border-radius: 8px;
-  background: var(--cream);
-}
-
-.topbar-svg {
-  width: 16px;
-  height: 16px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.topbar-site-link:hover {
-  background: var(--yellow);
-}
-
-.topbar-logout {
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--red);
-  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .page-body {
   flex-grow: 1;
-  padding: 32px 28px 64px;
+  padding: 32px 32px 64px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Responsif Mobile & Tablet */

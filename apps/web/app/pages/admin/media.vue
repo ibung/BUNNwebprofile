@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import type { PublicMedia } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminMediaDetail } from '~/composables/useAdminApi'
 
 definePageMeta({
@@ -10,6 +11,7 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const mediaList = ref<PublicMedia[]>([])
 const isLoading = ref(true)
@@ -92,11 +94,13 @@ const handleFileUpload = async (event: Event) => {
 
   try {
     await adminApi.uploadMedia(formData)
+    toast.success('Berkas berhasil diunggah ke Pustaka Media!')
     await fetchMedia()
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } }; message?: string }
     uploadError.value =
       errorObj.data?.error?.message || errorObj.message || 'Gagal mengunggah berkas. Format mungkin tidak didukung.'
+    toast.error(uploadError.value)
   } finally {
     isUploading.value = false
     if (fileInputRef.value) fileInputRef.value.value = ''
@@ -118,11 +122,13 @@ const handleYouTubeSubmit = async () => {
     ytUrl.value = ''
     ytTitle.value = ''
     isYtModalOpen.value = false
+    toast.success('Media YouTube berhasil ditambahkan!')
     await fetchMedia()
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
     ytError.value =
       errorObj.data?.error?.message || 'Gagal mendaftarkan URL YouTube.'
+    toast.error(ytError.value)
   } finally {
     isSubmittingYt.value = false
   }
@@ -158,11 +164,13 @@ const handleSaveMetadata = async () => {
       caption: editForm.value.caption || null,
     })
     isDetailOpen.value = false
+    toast.success('Metadata media berhasil disimpan.')
     await fetchMedia()
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
     detailError.value =
       errorObj.data?.error?.message || 'Gagal menyimpan perubahan metadata.'
+    toast.error(detailError.value)
   } finally {
     isSavingDetail.value = false
   }
@@ -184,10 +192,11 @@ const handleDeleteMedia = async () => {
   try {
     await adminApi.deleteMedia(selectedMediaDetail.value.id)
     isDetailOpen.value = false
+    toast.success('Media berhasil dihapus.')
     await fetchMedia()
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
-    alert(errorObj.data?.error?.message || 'Gagal menghapus media.')
+    toast.error(errorObj.data?.error?.message || 'Gagal menghapus media.')
   } finally {
     isDeleting.value = false
   }

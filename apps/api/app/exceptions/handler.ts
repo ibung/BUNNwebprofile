@@ -59,7 +59,12 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   }
 
   private resolveMessage(code: ApiErrorCode, original?: string): string {
-    if (original && code !== 'INTERNAL') return original
+    if (original && code !== 'INTERNAL') {
+      if (original === 'Validation failure' || original === 'validation failure') {
+        return 'Data yang dikirim tidak memenuhi validasi.'
+      }
+      return original
+    }
 
     const defaultMessages: Record<ApiErrorCode, string> = {
       VALIDATION_ERROR: 'Data yang dikirim tidak valid.',

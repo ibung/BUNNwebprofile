@@ -9,6 +9,7 @@ import type {
   AdminSocialLink,
   AdminHighlight,
 } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import MediaPickerModal from '~/components/admin/MediaPickerModal.vue'
 
 definePageMeta({
@@ -17,10 +18,10 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const activeTab = ref<'main' | 'facts' | 'socials' | 'highlights'>('main')
 const isLoading = ref(true)
-const statusMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Profil Form
 const profileForm = ref<Partial<AdminProfileData>>({})
@@ -90,16 +91,16 @@ onMounted(() => {
 })
 
 const showMessage = (type: 'success' | 'error', text: string) => {
-  statusMessage.value = { type, text }
-  setTimeout(() => {
-    if (statusMessage.value?.text === text) statusMessage.value = null
-  }, 4000)
+  if (type === 'success') {
+    toast.success(text)
+  } else {
+    toast.error(text)
+  }
 }
 
 // Profil Submit
 const handleSaveProfile = async () => {
   isSavingProfile.value = true
-  statusMessage.value = null
 
   try {
     const updated = await adminApi.updateProfile({
@@ -338,16 +339,6 @@ useSeoMeta({
         <span class="label">Identitas & Narasi</span>
         <h1>Kelola <em>Profil.</em></h1>
       </div>
-    </div>
-
-    <!-- Alert Status -->
-    <div
-      v-if="statusMessage"
-      class="alert-bar"
-      :class="statusMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-      role="alert"
-    >
-      {{ statusMessage.text }}
     </div>
 
     <!-- Tab Bar -->

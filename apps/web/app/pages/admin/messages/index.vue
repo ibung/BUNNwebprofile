@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { MESSAGE_STATUSES } from '@bunn/shared'
 import type { MessageStatus } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminMessage } from '~/composables/useAdminApi'
 
 definePageMeta({
@@ -11,11 +12,11 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const messages = ref<AdminMessage[]>([])
 const isLoading = ref(true)
 const selectedStatus = ref<string>('')
-const statusMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Detail Modal
 const activeMessage = ref<AdminMessage | null>(null)
@@ -41,10 +42,11 @@ onMounted(() => {
 })
 
 const showMessage = (type: 'success' | 'error', text: string) => {
-  statusMessage.value = { type, text }
-  setTimeout(() => {
-    if (statusMessage.value?.text === text) statusMessage.value = null
-  }, 4000)
+  if (type === 'success') {
+    toast.success(text)
+  } else {
+    toast.error(text)
+  }
 }
 
 const openMessage = async (msg: AdminMessage) => {
@@ -118,16 +120,6 @@ useSeoMeta({
         <span class="label">Kotak Masuk</span>
         <h1>Pesan <em>Kontak.</em></h1>
       </div>
-    </div>
-
-    <!-- Alert Status -->
-    <div
-      v-if="statusMessage"
-      class="alert-bar"
-      :class="statusMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-      role="alert"
-    >
-      {{ statusMessage.text }}
     </div>
 
     <!-- Filter Status Tabs -->

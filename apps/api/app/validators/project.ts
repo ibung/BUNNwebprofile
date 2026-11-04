@@ -7,16 +7,17 @@ export const createProjectValidator = vine.compile(
       .string()
       .trim()
       .maxLength(120)
-      .regex(/^[a-z0-9-]+$/),
+      .regex(/^[a-z0-9-]+$/)
+      .optional(),
     title: vine.string().trim().maxLength(160),
-    summary: vine.string().trim().maxLength(320),
-    descriptionMd: vine.string().trim(),
+    summary: vine.string().trim().maxLength(320).optional(),
+    descriptionMd: vine.string().trim().optional(),
     role: vine.string().trim().maxLength(120).nullable().optional(),
     kind: vine.string().trim().maxLength(60).nullable().optional(),
     status: vine.enum(PUBLISH_STATUSES).optional(),
     isFeatured: vine.boolean().optional(),
-    demoUrl: vine.string().trim().startsWith('https://').nullable().optional(),
-    repoUrl: vine.string().trim().startsWith('https://').nullable().optional(),
+    demoUrl: vine.string().trim().maxLength(500).nullable().optional(),
+    repoUrl: vine.string().trim().maxLength(500).nullable().optional(),
     startedOn: vine
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/)
@@ -49,8 +50,8 @@ export const updateProjectValidator = vine.compile(
     kind: vine.string().trim().maxLength(60).nullable().optional(),
     status: vine.enum(PUBLISH_STATUSES).optional(),
     isFeatured: vine.boolean().optional(),
-    demoUrl: vine.string().trim().startsWith('https://').nullable().optional(),
-    repoUrl: vine.string().trim().startsWith('https://').nullable().optional(),
+    demoUrl: vine.string().trim().maxLength(500).nullable().optional(),
+    repoUrl: vine.string().trim().maxLength(500).nullable().optional(),
     startedOn: vine
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/)

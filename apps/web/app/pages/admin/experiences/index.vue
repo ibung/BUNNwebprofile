@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { EXPERIENCE_KINDS } from '@bunn/shared'
 import type { ExperienceKind, PublicMedia } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminExperience } from '~/composables/useAdminApi'
 import MediaPickerModal from '~/components/admin/MediaPickerModal.vue'
 
@@ -12,10 +13,10 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const experiences = ref<AdminExperience[]>([])
 const isLoading = ref(true)
-const statusMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Modal State
 const isModalOpen = ref(false)
@@ -50,10 +51,11 @@ onMounted(() => {
 })
 
 const showMessage = (type: 'success' | 'error', text: string) => {
-  statusMessage.value = { type, text }
-  setTimeout(() => {
-    if (statusMessage.value?.text === text) statusMessage.value = null
-  }, 4000)
+  if (type === 'success') {
+    toast.success(text)
+  } else {
+    toast.error(text)
+  }
 }
 
 const openModal = (exp?: AdminExperience) => {
@@ -170,16 +172,6 @@ useSeoMeta({
           + Tambah Pengalaman Baru
         </button>
       </div>
-    </div>
-
-    <!-- Alert Status -->
-    <div
-      v-if="statusMessage"
-      class="alert-bar"
-      :class="statusMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-      role="alert"
-    >
-      {{ statusMessage.text }}
     </div>
 
     <div v-if="isLoading" class="loading-state">

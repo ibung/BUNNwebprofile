@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { PUBLISH_STATUSES } from '@bunn/shared'
+import { PUBLISH_STATUSES, PUBLISH_STATUS_LABELS } from '@bunn/shared'
 import type { PublishStatus } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminProject } from '~/composables/useAdminApi'
 
 definePageMeta({
@@ -11,12 +12,12 @@ definePageMeta({
 })
 
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const projects = ref<AdminProject[]>([])
 const isLoading = ref(true)
 const statusFilter = ref('')
 const searchQuery = ref('')
-const statusMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 const fetchProjects = async () => {
   isLoading.value = true
@@ -38,21 +39,14 @@ onMounted(() => {
   fetchProjects()
 })
 
-const showMessage = (type: 'success' | 'error', text: string) => {
-  statusMessage.value = { type, text }
-  setTimeout(() => {
-    if (statusMessage.value?.text === text) statusMessage.value = null
-  }, 4000)
-}
-
 const handleStatusChange = async (project: AdminProject, newStatus: PublishStatus) => {
   try {
     await adminApi.updateProjectStatus(project.id, newStatus)
     project.status = newStatus
-    showMessage('success', `Status proyek "${project.title}" diubah menjadi ${newStatus}.`)
+    toast.success(`Status proyek "${project.title}" diubah menjadi ${PUBLISH_STATUS_LABELS[newStatus]}.`)
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
-    showMessage('error', errorObj.data?.error?.message || 'Gagal mengubah status proyek.')
+    toast.error(errorObj.data?.error?.message || 'Gagal mengubah status proyek.')
   }
 }
 
@@ -62,10 +56,10 @@ const handleDeleteProject = async (id: number, title: string) => {
   try {
     await adminApi.deleteProject(id)
     projects.value = projects.value.filter((p) => p.id !== id)
-    showMessage('success', 'Proyek berhasil dihapus.')
+    toast.success('Proyek berhasil dihapus.')
   } catch (err: unknown) {
     const errorObj = err as { data?: { error?: { message?: string } } }
-    showMessage('error', errorObj.data?.error?.message || 'Gagal menghapus proyek.')
+    toast.error(errorObj.data?.error?.message || 'Gagal menghapus proyek.')
   }
 }
 
@@ -78,9 +72,9 @@ const moveProject = async (index: number, direction: 'up' | 'down') => {
     projects.value.splice(targetIndex, 0, item)
     try {
       await adminApi.reorderProjects(projects.value.map((p) => p.id))
-      showMessage('success', 'Urutan proyek berhasil diperbarui.')
+      toast.success('Urutan proyek berhasil diperbarui.')
     } catch {
-      showMessage('error', 'Gagal memperbarui urutan proyek.')
+      toast.error('Gagal memperbarui urutan proyek.')
     }
   }
 }
@@ -106,16 +100,6 @@ useSeoMeta({
       </div>
     </div>
 
-    <!-- Alert Status -->
-    <div
-      v-if="statusMessage"
-      class="alert-bar"
-      :class="statusMessage.type === 'success' ? 'alert--success' : 'alert--error'"
-      role="alert"
-    >
-      {{ statusMessage.text }}
-    </div>
-
     <!-- Toolbar Filter -->
     <div class="filter-toolbar card">
       <div class="search-box">
@@ -131,7 +115,7 @@ useSeoMeta({
         <select v-model="statusFilter" @change="fetchProjects">
           <option value="">Semua Status</option>
           <option v-for="st in PUBLISH_STATUSES" :key="st" :value="st">
-            Status: {{ st }}
+            {{ PUBLISH_STATUS_LABELS[st] }}
           </option>
         </select>
       </div>
@@ -205,9 +189,9 @@ useSeoMeta({
             :class="'status--' + project.status"
             @change="handleStatusChange(project, ($event.target as HTMLSelectElement).value as PublishStatus)"
           >
-            <option value="draft">Draf</option>
-            <option value="published">Terbit</option>
-            <option value="archived">Arsip</option>
+            <option v-for="st in PUBLISH_STATUSES" :key="st" :value="st">
+              {{ PUBLISH_STATUS_LABELS[st] }}
+            </option>
           </select>
         </div>
 

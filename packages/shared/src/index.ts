@@ -7,6 +7,12 @@ export type MediaKind = (typeof MEDIA_KINDS)[number]
 export const PUBLISH_STATUSES = ['draft', 'published', 'archived'] as const
 export type PublishStatus = (typeof PUBLISH_STATUSES)[number]
 
+export const PUBLISH_STATUS_LABELS: Record<PublishStatus, string> = {
+  draft: 'Draf',
+  published: 'Terbit',
+  archived: 'Arsip',
+}
+
 export const MESSAGE_STATUSES = ['new', 'read', 'archived', 'spam'] as const
 export type MessageStatus = (typeof MESSAGE_STATUSES)[number]
 

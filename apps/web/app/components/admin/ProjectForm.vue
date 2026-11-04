@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { PUBLISH_STATUSES } from '@bunn/shared'
+import { PUBLISH_STATUSES, PUBLISH_STATUS_LABELS } from '@bunn/shared'
 import type { PublicMedia, PublishStatus } from '@bunn/shared'
 import { useAdminApi } from '~/composables/useAdminApi'
+import { useAdminToast } from '~/composables/useAdminToast'
 import type { AdminProject, AdminSkill } from '~/composables/useAdminApi'
 import MediaPickerModal from './MediaPickerModal.vue'
 
@@ -14,6 +15,7 @@ const props = defineProps<{
 
 const router = useRouter()
 const adminApi = useAdminApi()
+const toast = useAdminToast()
 
 const isSaving = ref(false)
 const errorMessage = ref<string | null>(null)
@@ -143,6 +145,7 @@ const handleSubmit = async (targetStatus?: PublishStatus) => {
     const isReady = validatePublishReadiness()
     if (!isReady) {
       errorMessage.value = 'Proyek belum dapat diterbitkan karena ada data yang belum lengkap.'
+      toast.error(errorMessage.value, validationErrors.value)
       return
     }
   }
@@ -172,14 +175,30 @@ const handleSubmit = async (targetStatus?: PublishStatus) => {
   try {
     if (props.isEdit && props.initialData) {
       await adminApi.updateProject(props.initialData.id, payload)
+      toast.success('Proyek berhasil diperbarui!')
     } else {
       await adminApi.createProject(payload)
+      toast.success(payload.status === 'published' ? 'Proyek berhasil diterbitkan!' : 'Draf proyek berhasil disimpan!')
     }
     await router.push('/admin/projects')
   } catch (err: unknown) {
-    const errorObj = err as { data?: { error?: { message?: string } } }
-    errorMessage.value =
-      errorObj.data?.error?.message || 'Gagal menyimpan proyek.'
+    const errorObj = err as {
+      data?: {
+        error?: {
+          message?: string
+          details?: Array<{ field: string; message: string }>
+        }
+      }
+    }
+    const details = errorObj.data?.error?.details
+    if (details && Array.isArray(details) && details.length > 0) {
+      validationErrors.value = details.map((d) => `${d.field}: ${d.message}`)
+      errorMessage.value = errorObj.data?.error?.message || 'Validasi gagal.'
+    } else {
+      errorMessage.value =
+        errorObj.data?.error?.message || 'Gagal menyimpan proyek.'
+    }
+    toast.error(errorMessage.value, validationErrors.value.length > 0 ? validationErrors.value : undefined)
   } finally {
     isSaving.value = false
   }
@@ -228,12 +247,11 @@ const previewHtml = computed(() => {
         </div>
 
         <div class="form-group">
-          <label for="p-slug">Slug URL * (huruf kecil, angka, tanda hubung)</label>
+          <label for="p-slug">Slug URL (huruf kecil, angka, tanda hubung — terisi otomatis)</label>
           <input
             id="p-slug"
             v-model="form.slug"
             type="text"
-            required
             pattern="[a-z0-9\-]+"
             placeholder="contoh-portal-portofolio"
           >
@@ -472,7 +490,7 @@ const previewHtml = computed(() => {
           <label for="p-status">Status Proyek</label>
           <select id="p-status" v-model="form.status">
             <option v-for="st in PUBLISH_STATUSES" :key="st" :value="st">
-              {{ st === 'published' ? 'Terbit (Published)' : st === 'draft' ? 'Draf (Draft)' : 'Arsip (Archived)' }}
+              {{ PUBLISH_STATUS_LABELS[st] }}
             </option>
           </select>
         </div>
@@ -531,7 +549,7 @@ const previewHtml = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  max-width: 900px;
+  width: 100%;
 }
 
 .form-section {
