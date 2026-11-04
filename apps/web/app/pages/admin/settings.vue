@@ -1050,13 +1050,14 @@ useSeoMeta({
   color: var(--cream, #F6EDE0) !important;
 }
 
-.preview-accent {
+/* SectionHeading merender fragment tanpa root, jadi butuh :deep() agar style scoped sampai ke <em> */
+.preview-heading :deep(.preview-accent) {
   font-style: italic;
   color: var(--accent-orange, #d9531e);
 }
 
-.preview-accent--gold,
-.live-preview-box--terracotta .preview-accent {
+.preview-heading :deep(.preview-accent--gold),
+.live-preview-box--terracotta .preview-heading :deep(.preview-accent) {
   color: var(--yellow, #F2B84B) !important;
 }
 
