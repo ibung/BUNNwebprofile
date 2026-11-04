@@ -142,14 +142,16 @@ const avatarUrl = computed(() => {
   border: 3px solid var(--ink);
   box-shadow: 12px 12px 0 var(--ink);
   overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
+/* Foto diletakkan di dasar lingkaran agar ada ruang di atas kepala */
 .portrait img {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  width: 80%;
+  height: auto;
 }
 
 .has-photo .win {
