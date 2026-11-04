@@ -377,7 +377,7 @@ useSeoMeta({
       </section>
 
       <!-- TAB 2: TEKS & JUDUL SEGMEN LANDING PAGE -->
-      <section v-else-if="activeTab === 'sections'" class="sections-tab-container">
+      <div v-else-if="activeTab === 'sections'" class="sections-tab-container">
         <form @submit.prevent="handleSaveSettings">
           <!-- 1. Bagian Tentang Saya -->
           <div class="card section-editor-card">
@@ -717,7 +717,7 @@ useSeoMeta({
             </button>
           </div>
         </form>
-      </section>
+      </div>
 
       <!-- TAB 3: FORM GANTI KATA SANDI -->
       <section v-else-if="activeTab === 'password'" class="card password-card">
@@ -851,9 +851,20 @@ useSeoMeta({
   width: 100%;
 }
 
+.sections-tab-container {
+  width: 100%;
+  padding: 0;
+}
+
+.sections-tab-container form {
+  width: 100%;
+}
+
 .settings-card,
 .password-card,
 .section-editor-card {
+  width: 100%;
+  box-sizing: border-box;
   padding: 32px;
 }
 
