@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { PublicProfile } from '@bunn/shared'
 import TheNavbar from './TheNavbar.vue'
 
-defineProps<{
+const props = defineProps<{
   profile: PublicProfile
   siteTitle?: string
 }>()
+
+const avatarUrl = computed(() => {
+  const urls = props.profile.avatar?.urls
+  return urls?.md || urls?.lg || urls?.original || null
+})
 </script>
 
 <template>
@@ -32,18 +38,30 @@ defineProps<{
       </div>
     </div>
 
-    <div class="win" aria-hidden="true">
-      <div class="bar">
-        <span class="dot" />
-        <span class="dot" />
-        <span class="dot" />
+    <div class="hero-visual" :class="{ 'has-photo': avatarUrl }">
+      <div v-if="avatarUrl" class="portrait">
+        <img
+          :src="avatarUrl"
+          :alt="profile.avatar?.altText || `Foto ${profile.fullName || 'profil'}`"
+          :width="profile.avatar?.width ?? undefined"
+          :height="profile.avatar?.height ?? undefined"
+          fetchpriority="high"
+        >
       </div>
-      <div class="body">
-        <span class="code"><span>const</span> developer = {</span>
-        <span class="code">&nbsp;&nbsp;nama: "{{ profile.fullName || 'Ibnu Hilmi Athaillah' }}",</span>
-        <span class="code">&nbsp;&nbsp;peran: "{{ profile.headline || 'Frontend Developer & QA Tester' }}",</span>
-        <span class="code">&nbsp;&nbsp;status: "{{ profile.availabilityText || 'Terbuka untuk proyek' }}"</span>
-        <span class="code">}<span class="cursor" /></span>
+
+      <div class="win" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" />
+          <span class="dot" />
+          <span class="dot" />
+        </div>
+        <div class="body">
+          <span class="code"><span>const</span> developer = {</span>
+          <span class="code">&nbsp;&nbsp;nama: "{{ profile.fullName || 'Ibnu Hilmi Athaillah' }}",</span>
+          <span class="code">&nbsp;&nbsp;peran: "{{ profile.headline || 'Frontend Developer & QA Tester' }}",</span>
+          <span class="code">&nbsp;&nbsp;status: "{{ profile.availabilityText || 'Terbuka untuk proyek' }}"</span>
+          <span class="code">}<span class="cursor" /></span>
+        </div>
       </div>
     </div>
   </header>
@@ -103,6 +121,53 @@ defineProps<{
   border-radius: 50%;
   background: var(--yellow);
   z-index: 1;
+}
+
+.hero-visual {
+  position: relative;
+  z-index: 2;
+}
+
+/* Foto profil: lingkaran kuning ala neo-brutalist, jendela kode menumpuk di bawah-kiri */
+.hero-visual.has-photo {
+  justify-self: center;
+  width: min(100%, 470px);
+  padding-bottom: 70px;
+}
+
+.portrait {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+  box-shadow: 12px 12px 0 var(--ink);
+  overflow: hidden;
+}
+
+.portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.has-photo .win {
+  position: absolute;
+  left: -48px;
+  bottom: 0;
+  width: min(330px, 80%);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+.has-photo .win .body {
+  min-height: 0;
+  padding: 16px 18px;
+  gap: 6px;
+}
+
+.has-photo .code {
+  font-size: 12px;
 }
 
 .win {
@@ -183,6 +248,18 @@ defineProps<{
     grid-template-columns: 1fr;
     padding-top: 130px;
     min-height: 0;
+  }
+
+  .hero-visual.has-photo {
+    width: min(100%, 340px);
+    padding-bottom: 0;
+  }
+
+  .has-photo .win {
+    position: relative;
+    left: auto;
+    width: 100%;
+    margin-top: -36px;
   }
 }
 </style>
